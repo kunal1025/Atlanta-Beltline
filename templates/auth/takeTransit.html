@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Take Transit</title>
+  </head>
+  <body class="bg-light">
+      <div class="container">
+          <form action="">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Route</th>
+                    <th scope="col">Transit Type</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Connected Sites</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transit in transits %}
+                        <tr>
+                            <td>
+                                <input class="form-check-input" type="radio" name="transit" id="transit" value="{{transit.TransitRoute}},{{transit.TransitType}}">
+                            </td>
+                            <td>{{transit.TransitRoute}}</td>
+                            <td>{{transit.TransitType}}</td>
+                            <td>{{transit.Price}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+          </form>

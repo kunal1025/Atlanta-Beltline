@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import render_template, redirect
 import auth
+import db
 
 app = Flask(__name__)
 app.config.from_mapping(
@@ -11,22 +12,17 @@ app.config.from_mapping(
 def home_page():
     return render_template('index.html')
 
-app.register_blueprint(auth.bp)
+@app.route('/transit', methods=['GET'])
+def takeTransit():
+    conn = db.get_connection()
+    sql = 'select * from transit'
+    with conn.cursor() as cursor:
+        cursor.execute(sql)
+        transits = cursor.fetchall()
+        print(transits)
+    return render_template('/auth/takeTransit.html', transits=transits)
 
-# a simple page that says hello
-@app.route('/hello', methods=['GET'])
-def hello():
-    result = 'hello world'
-    connection = db.get_connection()
-    try:
-        with connection.cursor() as cursor:
-            sql = 'select * from user'
-            cursor.execute(sql)
-            result = cursor.fetchone()
-    except Exception as e:
-        print(e)
-    return result['Username']
-    #return 'Hello, World!'
+app.register_blueprint(auth.bp)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
