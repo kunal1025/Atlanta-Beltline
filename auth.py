@@ -26,7 +26,7 @@ def login():
         if error is None:
             session.clear()
             session['username'] = user['username']
-            return redirect('/')
+            return redirect('/transit')
 
         flash(error)
 
