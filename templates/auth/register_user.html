@@ -31,11 +31,11 @@
             <h2>Register User</h2>
         </div>
         <div class="col-md-8 offset-md-2">
-                <form class="needs-validation" novalidate>
+                <form method='post' class="needs-validation" novalidate>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="firstName">First name</label>
-                            <input type="text" class="form-control" id="firstName" placeholder="" value="" required>
+                            <input type="text" class="form-control" name="firstName" id="firstName" placeholder="" value="" required>
                             <div class="invalid-feedback">
                                 Valid first name is required.
                             </div>
@@ -81,12 +81,15 @@
                     </div>
                     <div class="mb-3">
                         <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email" placeholder="you@example.com">
+                        <input type="email" class="form-control" name="email[]" id="email[]" placeholder="you@example.com">
                         <div class="invalid-feedback">
                             Please enter a valid email address
                         </div>
                     </div>
-                    <button type="button" class="btn btn-default btn-lg btn-circle">
+                    <div class="emails" id="emails">
+                        <!-- Additional Emails go here -->
+                    </div>
+                    <button type="button" class="add_email btn btn-default btn-lg btn-circle" onclick="add_email(event)">
                         <i class="fas fa-plus"></i>
                     </button>
                     <hr class="mb-4">
@@ -117,10 +120,28 @@
             });
             }, false);
         })();
+
     </script>
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.5/validator.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.5/validator.min.js"></script>
+    <script>
+        // Function to add and remove additional email addresses
+        function add_email(event) {
+            document.getElementById('emails').innerHTML +=
+            `<div class="mb-3 input-group">
+                <input type="email" class="form-control" name="email[]" placeholder="you@example.com">
+                <div class="invalid-feedback">
+                    Please enter a valid email address
+                </div>
+                <i class="remove_btn btn btn-danger" onclick="remove_email(this)">-</i>
+            </div>`;
+            event.preventDefault()
+        };
+        function remove_email(e) {
+            e.parentNode.parentNode.removeChild(e.parentNode)
+        }
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   </body>

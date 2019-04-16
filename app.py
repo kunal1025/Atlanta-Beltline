@@ -12,6 +12,14 @@ app.config.from_mapping(
 def home_page():
     return render_template('index.html')
 
+@app.route('/register', methods=['GET', 'POST'])
+def register_user():
+    if request.method == 'GET':
+        return render_template('/auth/register_user.html')
+    else:
+        print(request.form.getlist('email[]'))
+        return redirect('/register')
+
 @app.route('/transit', methods=['GET', 'POST'])
 def takeTransit():
     conn = db.get_connection()
@@ -34,12 +42,11 @@ def takeTransit():
         transit = request.form.get('transit').split(',')
         date = request.form.get('date')
         take_transit = 'select username from take where username = %s AND TransitDate = %s AND TransitRoute = %s AND TransitType = %s'
-        print(transit[0])
-        print(transit[1])
         with conn.cursor() as cursor:
             cursor.execute(take_transit, (username, date, transit[0], transit[1]))
             result = cursor.fetchone()
             if (result):
+                error = 'transitAlreadyTaken'
                 return redirect('/transit')
             else:
                 #insert into table
