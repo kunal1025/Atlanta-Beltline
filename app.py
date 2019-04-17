@@ -36,7 +36,7 @@ def takeTransit():
             transits = cursor.fetchall()
             cursor.execute(siteSQL)
             sites = cursor.fetchall()
-        return render_template('/auth/takeTransit.html', transits=transits, sites=sites)
+        return render_template('/transit/takeTransit.html', transits=transits, sites=sites)
     elif request.method == 'POST':
         username = session['username']
         transit = request.form.get('transit').split(',')
