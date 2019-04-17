@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Admin Manage Tansit</title>
+  </head>
+  <body class="bg-light">
+      <div class="container">
+            <div class="py-5 text-center">
+                <h2>Manage Transit</h2>
+            </div>
+            <div class="col-md-8 offset-md-2">
+                <form method="get">
+                    <div class="row">
+                            <div class="col-md-4">
+                                <label for="type">Transit Type</label>
+                                <select class="form-control" name="type" id="type">
+                                    <option value="">All</option>
+                                    <option value="MARTA">MARTA</option>
+                                    <option value="Bus">Bus</option>
+                                    <option value="Bike">Bike</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label for=""> </label>
+                                <p></p>
+                            </div>
+
+                            <div class="col-md-5">
+                                <label for="manager">Manager</label>
+                                <select class="form-control" name="manager" id="manager">
+                                    <option value="">All</option>
+                                    {% for manager in managers %}
+                                        <option value="{{manager.name}}">{{manager.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label for="site">Site</label>
+                                <select class="form-control" name="site" id="site">
+                                    <option value="">All</option>
+                                    {% for site in sites %}
+                                        <option value="{{site.name}}">{{site.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-2">
+                                <label for=""> </label>
+                                <p></p>
+                            </div>
+
+
+                            <div class="col-md-2">
+                                <label for="lowPrice">Price(Low)</label>
+                                <input type="number" class="form-control" name="lowPrice" id="lowPrice" placeholder="" value="" min="0">
+                            </div>
+                            <div class="col-md-1">
+                                <label for=""> </label>
+                                <p></p>
+                                <p>--</p>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="highprice">(High)</label>
+                                <input type="number" class="form-control" name="highPrice" id="highPrice" placeholder="" value="" min="0">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label for="">  </label>
+                                <button class="btn btn-primary btn-sm btn-block" type="submit">Filter</button>   
+                            </div>
+                            <div class="col-md-1">
+                                <label for=""> </label>
+                                <p></p>
+                            </div>
+                            <div class="col-md-2 offset-md-2">
+                                <label for="">  </label>
+                                <button class="btn btn-primary btn-sm btn-block" type="submit">Create</button>   
+                            </div>
+                            <div class="col-md-2">
+                                <label for="">  </label>
+                                <button class="btn btn-primary btn-sm btn-block" type="submit">Edit</button>   
+                            </div>
+                            <div class="col-md-2">
+                                <label for="">  </label>
+                                <button class="btn btn-primary btn-sm btn-block" type="submit">Delete</button>   
+                            </div>
+                        </div>
+                </form>
+                <form method="post">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                            <th scope="col"></th>
+                            <th scope="col">Route</th>
+                            <th scope="col">Transport Type</th>
+                            <th scope="col">Price</th>
+                            <th scope="col"># Connected Sites</th>
+                            <th scope="col"># Transit Logged</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for route in routes %}
+                                <tr>
+                                    <td>
+                                        <input class="form-check-input" type="radio" name="route" id="route" value="{{name.route}}" required>
+                                    </td>
+                                    <td>{{name.route}}</td>
+                                    <td>{{name.Transport Type}}</td>
+                                    <td>{{name.Price}}</td>
+                                    <td>{{name.# Connected Sites}}</td>
+                                    <td>{{name.# Transit Logged}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-md-3 offset-md-4">
+                            <label for="">  </label>
+                            <p></p>
+                            <button class="btn btn-primary btn-sm btn-block" type="submit">Back</button>   
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
