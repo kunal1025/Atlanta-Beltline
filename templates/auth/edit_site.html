@@ -48,18 +48,6 @@
                                 </div>
                             </div>
                     </div>
-                    <!-- <div class="mb-3">
-                        <label for="username">Username</label>
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                            <span class="input-group-text">@</span>
-                            </div>
-                            <input type="text" class="form-control" id="username" placeholder="Username" required>
-                            <div class="invalid-feedback" style="width: 100%;">
-                                Your username is required.
-                            </div>
-                        </div>
-                    </div> -->
                     <div class="row">
                             <div class="col-md-12">
                                 <label for="password">Address</label>
@@ -72,21 +60,45 @@
                                 </div>
                             </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="email">Email</label>
-                        <input type="email" class="form-control" name="email[]" id="email[]" placeholder="you@example.com">
-                        <div class="invalid-feedback">
-                            Please enter a valid email address
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="manager">Manager</label>
+                            <select class="form-control" name="manager" id="manager">
+                                <option value="">All</option>
+                                {% for manager in managers %}
+                                    <option value="{{manager.name}}">{{manager.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for=""> </label>
+                            <p></p>
+                        </div> 
+
+                        <div class="col-md-4 mb-3">
+                            <label for="manager">Open Everyday</label>
+                            <select class="form-control" name="type" id="type">
+                                    <option value="">Yes</option>
+                                    <option value="MARTA">No</option>
+                                </select>
                         </div>
                     </div>
-                    <div class="emails" id="emails">
-                        <!-- Additional Emails go here -->
+
+                    <div class="row">
+                        <div class="col-md-4 offset-md-1">
+                            <button class="btn btn-primary btn-lg btn-block" type="submit">Back</button>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label for=""> </label>
+                            <p></p>
+                        </div>  
+
+                        <div class="col-md-4">
+                            <button class="btn btn-primary btn-lg btn-block" type="submit">Update</button>
+                        </div>
                     </div>
-                    <button type="button" class="add_email btn btn-default btn-lg btn-circle" onclick="add_email(event)">
-                        <i class="fas fa-plus"></i>
-                    </button>
-                    <hr class="mb-4">
-                    <button class="btn btn-primary btn-lg btn-block" type="submit">Register</button>
                 </form>
         </div>
       </div>
