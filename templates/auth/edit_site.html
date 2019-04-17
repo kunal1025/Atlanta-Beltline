@@ -23,19 +23,19 @@
         }
     </style>
 
-    <title>Register User</title>
+    <title>Admin Edit Side</title>
   </head>
   <body class="bg-light">
       <div class="container">
         <div class="py-5 text-center">
-            <h2>Register User</h2>
+            <h2>Edit Side</h2>
         </div>
         <div class="col-md-8 offset-md-2">
                 <form method='post' class="needs-validation" novalidate>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="firstName">Name</label>
-                            <input type="text" class="form-control" name="firstName" id="firstName" placeholder="First Middle Last" value="" required>
+                            <input type="text" class="form-control" name="firstName" id="firstName" placeholder="" value="" required>
                             <div class="invalid-feedback">
                                 Valid first name is required.
                             </div>
@@ -48,7 +48,7 @@
                                 </div>
                             </div>
                     </div>
-                    <div class="mb-3">
+                    <!-- <div class="mb-3">
                         <label for="username">Username</label>
                         <div class="input-group">
                             <div class="input-group-prepend">
@@ -59,23 +59,16 @@
                                 Your username is required.
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="password">Password</label>
-                                <input type="password" class="form-control" id="password" placeholder="" value="" required>
-                                <small id="passwordHelpInline" class="text-muted">
-                                    Must be 8-20 characters long.
+                            <div class="col-md-12">
+                                <label for="password">Address</label>
+                                <input type="text" class="form-control" id="password" placeholder="" value="" required>
+                                <!-- <small id="passwordHelpInline" class="text-muted"> -->
+                                    <!-- Must be 8-20 characters long. -->
                                 </small>
                                 <div class="invalid-feedback">
                                     Valid password is required.
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="passwordConfirm">Confirm Password</label>
-                                <input type="password" class="form-control" id="passwordConfirm" placeholder="" value="" data-match="#password" data-match-error="Whoops, these don't match" required>
-                                <div class="invalid-feedback">
-                                    Valid Confirm Password is required
                                 </div>
                             </div>
                     </div>
