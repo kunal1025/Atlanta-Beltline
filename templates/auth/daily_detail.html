@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Manager Daily Detail</title>
+  </head>
+  <body class="bg-light">
+      <div class="container">
+            <div class="py-5 text-center">
+                <h2>Daily Detail</h2>
+            </div>
+            <div class="col-md-8 offset-md-2">
+                <!-- <form method="post"> -->
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                            <th scope="col">Event Name</th>
+                            <th scope="col">Staff Names</th>
+                            <th scope="col">Visits</th>
+                            <th scope="col">Revenue ($)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for data in dataDB %}
+                                <tr>
+                                    <td>{{data.Event Name}}</td>
+                                    <td>{{data.Staff Names}}</td>
+                                    <td>{{data.Visits}}</td>
+                                    <td>{{data.Revenue ($)}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-md-3 offset-md-4">
+                            <label for="">  </label>
+                            <p></p>
+                            <button class="btn btn-primary btn-sm btn-block" type="submit">Back</button>   
+                        </div>
+                    </div>
+                <!-- </form> -->
+            </div>
+        </div>
