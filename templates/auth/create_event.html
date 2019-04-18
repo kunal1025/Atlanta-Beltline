@@ -11,28 +11,44 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 
-    <title>Manager View/Edit Transit</title>
+    <title>Manager Create Event</title>
   </head>
   <body class="bg-light">
     <div class="container">
         <div class="py-5 text-center">
-            <h2>View/Edit Transit</h2>
+            <h2>Create Transit</h2>
         </div>
         <div class="col-md-8 offset-md-2">
             <form method='post' class="needs-validation" novalidate>
                 <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label for="transportType">Transport Type</label>
-                        <input type="text" class="form-control" id="transportType" value="{{data.transportType}}" readonly>
+                    <div class="col-md-12 mb-3">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" name="name" placeholder="" value="" required>
                     </div>
-    
-                    <div class="col-md-4 offset-md-4">
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">
                         <label for="price">Price</label>
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">$</span>
                             </div>
-                            <input type="num" class="form-control" id="price" value="{{data.price}}" readonly>
+                            <input type="num" class="form-control" name="price" value="" min="0" required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 offset-md-1">
+                        <label for="capacity">Capacity</label>
+                        <div class="input-group">
+                            <input type="num" class="form-control" name="capacity" value="" min="0" required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 offset-md-2">
+                        <label for="capacity">Minimum Staff Required</label>
+                        <div class="input-group">
+                            <input type="num" class="form-control" name="capacity" value="" required>
                         </div>
                     </div>
                 </div>
@@ -50,22 +66,22 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label for="minStaff">Minimum Staff Required</label>
-                        <input type="text" class="form-control" id="minStaff" value="{{data.minStaff}}" readonly>
-                    </div>
-
-                    <div class="col-md-4 offset-md-4">
-                        <label for="capacity">Capacity</label>
-                        <input type="text" class="form-control" id="capacity" value="{{data.capacity}}" readonly>
+                    <div class="col-md-12 mb-3">
+                        <label for="desc">Description</label>
+                       <!--  <input type="text" class="form-control" name="desc" placeholder="" value="" required> -->
+   <!-- Make sure to check this implementation -->
+                       <textarea id="desc" style="width: 705px; height: 170px" rows="10" cols="80"></textarea>
+        <!-- Test the functionality -->
+                        <div class="invalid-feedback">
+                            Please enter the description for the event.
+                        </div>
                     </div>
                 </div>
 
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                        <th scope="col"></th>
-                        <th scope="col">Staff Assigned</th>
+                        <th scope="col">Assign Staff</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -80,93 +96,14 @@
                     </tbody>
                 </table>
 
-                <div class="row">
-                    <div class="col-md-12 mb-3">
-                        <label for="desc">Description</label>
-                       <!--  <input type="text" class="form-control" name="desc" placeholder="" value="" required> -->
-   <!-- Make sure to check this implementation -->
-                       <textarea id="desc" style="width: 705px; height: 170px" rows="10" cols="80"></textarea>
-        <!-- Test the functionality -->
-                        <div class="invalid-feedback">
-                            Please enter the description for the event.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-3">
-                        <label for="rangeMin">Daily Visit (Min #)</label>
-                        <input type="number" class="form-control" name="rangeMin" id="rangeMin" placeholder="" value="" min="0">
-                    </div>
-                    <div class="col-md-0">
-                        <label for=""> </label>
-                        <p></p>
-                        <p>--</p>
-                    </div>
-                    <div class="col-md-2">
-                        <label for="rangeMax">(Max #)</label>
-                        <input type="number" class="form-control" name="rangeMax" id="rangeMax" placeholder="" value="" min="0">
-                    </div>
-<!-- Add functionality of the same day range. (Note 1, Screen 25) -->
-
-                    <div class="col-md-1">
-                        <label for=""> </label>
-                        <p></p>
-                    </div>
-
-                    <div class="col-md-3">
-                        <label for="visitMin">Daily Revenue (Min)</label>
-                        <input type="number" class="form-control" name="visitMin" id="visitMin" placeholder="" value="" min="0">
-                    </div>
-                    <div class="col-md-0">
-                        <label for=""> </label>
-                        <p></p>
-                        <p>--</p>
-                    </div>
-                    <div class="col-md-2">
-                        <label for="visitMax">(Max)</label>
-                        <input type="number" class="form-control" name="visitMax" id="visitMax" placeholder="" value="" min="0">
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-4">
-                        <button class="btn btn-primary btn-lg btn-block" type="submit">Filter</button>
-                    </div>
-
-                    <div class="col-md-4">
-                        <label for=""> </label>
-                        <p></p>
-                    </div>
-
-                    <div class="col-md-4">
-                        <button class="btn btn-primary btn-lg btn-block" type="submit">Update</button>
-                    </div>
-                </div>
-
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                        <th scope="col">Date</th>
-                        <th scope="col">Daily Visits</th>
-                        <th scope="col">Total Revenue</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for data in dataDB %}
-                            <tr>
-                                <td>{{data.date}}</td>
-                                <td>{{data.Daily Visits}}</td>
-                                <td>{{data.Total Revenue}}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-
                 <hr class="mb-4">
                 <div class="row">
+                    <div class="col-md-4">
+                        <button class="btn btn-primary btn-sm btn-block" type="submit">Back</button>
+                    </div>
+
                     <div class="col-md-4 offset-md-4">
-                        <button class="btn btn-primary btn-lg btn-block" type="submit">Back</button>
+                        <button class="btn btn-primary btn-sm btn-block" type="submit">Create</button>
                     </div>
                 </div> 
             </form>
