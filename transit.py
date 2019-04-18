@@ -8,4 +8,10 @@ bp = Blueprint('transit', __name__, url_prefix='/transit')
 
 @bp.route('/login', methods=('GET', 'POST'))
 def create():
-    cd
+    if request.method == 'GET':
+        return render_template('transit/create_transit.html')
+    else:
+
+        conn = db.get_connection()
+
+def
