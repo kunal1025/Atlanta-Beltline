@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Visitor Explore Site</title>
+  </head>
+  <body class="bg-light">
+      <div class="container">
+            <div class="py-5 text-center">
+                <h2>Explore Site</h2>
+            </div>
+            <div class="col-md-8 offset-md-2">
+                <form method="get">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="site">Name</label>
+                            <select class="form-control" name="site" id="site">
+                                <option value="">All</option>
+                                {% for site in sites %}
+                                    <option value="{{site.name}}">{{site.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-4 offset-md-4">
+                            <label for="type">Open Everyday</label>
+                            <select class="form-control" name="type" id="type">
+                                <option value="">All</option>
+                                <option value="MARTA">Yes</option>
+                                <option value="Bus">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="date">Start Date</label>
+                            <input type="date" class="form-control" name="date" id="date" placeholder="" value="" required>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="date">End Date</label>
+                            <input type="date" class="form-control" name="date" id="date" placeholder="" value="" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label for="visitMin">Total Visit (Min #day)</label>
+                            <input type="num" class="form-control" name="visitMin" id="visitMin" placeholder="" value="" min="0">
+                        </div>
+                        <div class="col-md-0">
+                            <label for=""> </label>
+                            <p></p>
+                            <p>--</p>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="visitMax">(Max #)</label>
+                            <input type="num" class="form-control" name="visitMax" id="visitMax" placeholder="" value="" min="0">
+                        </div>
+    <!-- Add functionality of the same day range. (Note 1, Screen 25) -->
+
+                        <div class="col-md-1">
+                            <label for=""> </label>
+                            <p></p>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label for="priceMin">EVent Count (Min)</label>
+                            <input type="num" class="form-control" name="priceMin" id="priceMin" placeholder="" value="" min="0">
+                        </div>
+                        <div class="col-md-0">
+                            <label for=""> </label>
+                            <p></p>
+                            <p>--</p>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="priceMax">(Max)</label>
+                            <input type="num" class="form-control" name="priceMax" id="priceMax" placeholder="" value="" min="0">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 offset-md-4">
+                            <label for="site">Include Visited</label>
+                            <select class="form-control" name="site" id="site">
+                                <option value="">Yes</option>
+                                <option value="">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label for="">  </label>
+                            <button class="btn btn-primary btn-sm btn-block" type="submit">Filter</button>   
+                        </div>
+                        
+                        <div class="col-md-3 offset-md-3">
+                            <label for="">  </label>
+                            <button class="btn btn-primary btn-sm btn-block" type="submit">Site Detail</button>   
+                        </div>
+
+                        <div class="col-md-3">
+                            <label for="">  </label>
+                            <button class="btn btn-primary btn-sm btn-block" type="submit">Transit Detail</button>   
+                        </div>
+                    </div>
+                </form>
+                <form method="post">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                            <th scope="col"></th>
+                            <th scope="col">Site Name</th>
+                            <th scope="col">Event Count</th>
+                            <th scope="col">Ticket Visits</th>
+                            <th scope="col">My Visits</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for site in site %}
+                                <tr>
+                                    <td>
+                                        <input class="form-check-input" type="radio" name="site" id="siteName" value="{{site.siteName}}" required>
+                                    </td>
+                                    <td>{{site.Site Name}}</td>
+                                    <td>{{site.Event Count}}</td>
+                                    <td>{{site.Ticket Visists}}</td>
+                                    <td>{{site.My Visits}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-md-3 offset-md-4">
+                            <label for="">  </label>
+                            <p></p>
+                            <button class="btn btn-primary btn-sm btn-block" type="submit">Back</button>   
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
