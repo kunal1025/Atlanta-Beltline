@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Visitor Explore Event</title>
+  </head>
+  <body class="bg-light">
+      <div class="container">
+            <div class="py-5 text-center">
+                <h2>Explore Event</h2>
+            </div>
+            <div class="col-md-8 offset-md-2">
+                <form method="get">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <label for="tourName">Name</label>
+                            <input type="text" class="form-control" name="name" id="name" value="">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label for=""> </label>
+                            <p></p>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="type">Desciption keyword</label>
+                            <input type="text" class="form-control" name="desc" id="desc" value="">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="site">Site Name</label>
+                            <select class="form-control" name="site" id="site">
+                                <option value="">All</option>
+                                {% for site in sites %}
+                                    <option value="{{site.name}}">{{site.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="date">Start Date</label>
+                            <input type="date" class="form-control" name="date" id="date" placeholder="" value="" required>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="date">End Date</label>
+                            <input type="date" class="form-control" name="date" id="date" placeholder="" value="" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label for="visitMin">Total Visit (Min #day)</label>
+                            <input type="num" class="form-control" name="visitMin" id="visitMin" placeholder="" value="" min="0">
+                        </div>
+                        <div class="col-md-0">
+                            <label for=""> </label>
+                            <p></p>
+                            <p>--</p>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="visitMax">(Max #)</label>
+                            <input type="num" class="form-control" name="visitMax" id="visitMax" placeholder="" value="" min="0">
+                        </div>
+    <!-- Add functionality of the same day range. (Note 1, Screen 25) -->
+
+                        <div class="col-md-1">
+                            <label for=""> </label>
+                            <p></p>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label for="priceMin">Ticket Price $ (Min)</label>
+                            <input type="num" class="form-control" name="priceMin" id="priceMin" placeholder="" value="" min="0">
+                        </div>
+                        <div class="col-md-0">
+                            <label for=""> </label>
+                            <p></p>
+                            <p>--</p>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="priceMax">(Max)</label>
+                            <input type="num" class="form-control" name="priceMax" id="priceMax" placeholder="" value="" min="0">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 offset-md-1">
+                            <label for="site">Include Visited</label>
+                            <select class="form-control" name="site" id="site">
+                                <option value="">Yes</option>
+                                <option value="">No</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4 offset-md-2">
+                            <label for="site">Include Sold Out Events</label>
+                            <select class="form-control" name="site" id="site">
+                                <option value="">Yes</option>
+                                <option value="">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3 offset-md-2">
+                            <label for="">  </label>
+                            <button class="btn btn-primary btn-sm btn-block" type="submit">Filter</button>   
+                        </div>
+                        
+                        <div class="col-md-3 offset-md-2">
+                            <label for="">  </label>
+                            <button class="btn btn-primary btn-sm btn-block" type="submit">Event Detail</button>   
+                        </div>
+                    </div>
+                </form>
+                <form method="post">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                            <th scope="col"></th>
+                            <th scope="col">Event Name</th>
+                            <th scope="col">Site Name</th>
+                            <th scope="col">Ticket Price</th>
+                            <th scope="col">Ticket Remaining</th>
+                            <th scope="col">Total Visits</th>
+                            <th scope="col">My Visits</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for event in EventDB %}
+                                <tr>
+                                    <td>
+                                        <input class="form-check-input" type="radio" name="event" id="eventName" value="{{event.eventName}}" required>
+                                    </td>
+                                    <td>{{event.Event Name}}</td>
+                                    <td>{{event.Site Name}}</td>
+                                    <td>{{event.Ticket Price}}</td>
+                                    <td>{{event.Tickets Reamining}}</td>
+                                    <td>{{event.Total Visits}}</td>
+                                    <td>{{event.My Visits}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-md-3 offset-md-4">
+                            <label for="">  </label>
+                            <p></p>
+                            <button class="btn btn-primary btn-sm btn-block" type="submit">Back</button>   
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
