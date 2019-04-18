@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Manager Manage Staff</title>
+  </head>
+  <body class="bg-light">
+      <div class="container">
+            <div class="py-5 text-center">
+                <h2>Manage Staff</h2>
+            </div>
+            <div class="col-md-8 offset-md-2">
+                <form method="get">
+                    <div class="row">
+                        <div class="col-md-4 offset-md-4">
+                            <label for="site">Site</label>
+                            <select class="form-control" name="site" id="site">
+                                <option value="">All</option>
+                                {% for site in sites %}
+                                    <option value="{{site.name}}">{{site.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="firstName">First Name</label>
+                            <input type="text" class="form-control" name="firstName" id="firstName" placeholder="David" value="" required>
+                            <div class="invalid-feedback">
+                                Valid first name is required.
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="lastName">Last name</label>
+                            <input type="text" class="form-control" name="lastName" id="lastName" placeholder="Smith" value="" required>
+                            <div class="invalid-feedback">
+                                Valid first name is required.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="date">Start Date</label>
+                            <input type="date" class="form-control" name="date" id="date" placeholder="" value="" required>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="date">End Date</label>
+                            <input type="date" class="form-control" name="date" id="date" placeholder="" value="" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3 offset-md-4">
+                            <label for="">  </label>
+                            <button class="btn btn-primary btn-sm btn-block" type="submit">Filter</button>   
+                        </div>
+                    </div>
+                </form>
+                <!-- <form method="post"> -->
+                <table class="table table-striped"> 
+                    <thead>
+                        <tr>
+                        <th scope="col">Staff Name</th>
+                        <th scope="col"># Event Shift</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for name in names %}
+                            <tr>
+                                <td>{{name.firstname}}</td>
+                                <td>{{name.# Event Shift}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                    <div class="row">
+                        <div class="col-md-3 offset-md-4">
+                            <label for="">  </label>
+                            <p></p>
+                            <button class="btn btn-primary btn-sm btn-block" type="submit">Back</button>   
+                        </div>
+                    </div>
+                <!-- </form> -->
+            </div>
+        </div>

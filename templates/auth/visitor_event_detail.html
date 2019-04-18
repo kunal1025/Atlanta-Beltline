@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+    <title>Visitor Event Detail</title>
+  </head>
+  <body class="bg-light">
+    <div class="container">
+        <div class="py-5 text-center">
+            <h2>Event Detail</h2>
+        </div>
+        <div class="col-md-8 offset-md-2">
+            <form method='post' class="needs-validation" novalidate>
+                <div class="row">
+                    <div class="col-md-5 mb-3">
+                        <label for="eventName">Event</label>
+                        <input type="text" class="form-control" id="eventName" value="{{event.eventName}}" readonly>
+                    </div>
+    
+                    <div class="col-md-4 offset-md-1">
+                        <label for="siteName">Site</label>
+                        <input type="text" class="form-control" id="siteName" value="{{event.siteName}}" readonly>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="startDate">Start Date</label>
+                        <input type="text" class="form-control" id="startDate" value="{{event.startDate}}" readonly>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="endDate">End Date</label>
+                        <input type="text" class="form-control" id="endDate" value="{{event.endDate}}" readonly>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="staffName">Ticket Price ($)</label>
+                        <input type="num" class="form-control" id="price" value="{{event.price}}" readonly>
+                    </div>
+
+                    <div class="col-md-4 offset-md-3">
+                        <label for="ticketReamining">Tickets Remaining</label>
+                        <input type="num" class="form-control" id="ticketReamining" value="{{event.ticketReamining}}" readonly>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="desd">Description</label>
+                            <input type="text" class="form-control" id="desc" value="{{event.desc}}" readonly>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="visitDate">Visit Date</label>
+                        <input type="date" class="form-control" name="visitDate" id="visitDate" placeholder="" value="" required>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label for=""></label>
+                        <p></p>
+                        <button class="btn btn-primary btn-md btn-block" type="submit">Log Visit</button>   
+                    </div>
+
+                </div>
+
+                <div class="row">
+                        <div class="col-md-3 offset-md-5">
+                            <label for="">  </label>
+                            <!-- <p></p> -->
+                            <button class="btn btn-primary btn-md btn-block" type="submit">Back</button>   
+                        </div>
+                    </div>
+            </form>
+        </div>
+    </div>
+</body>
