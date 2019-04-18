@@ -18,53 +18,53 @@
             <div class="col-md-8 offset-md-2">
                 <form method="get">
                     <div class="row">
-                            <div class="col-md-4 offset-md-4">
-                                <label for="site">Site</label>
-                                <select class="form-control" name="site" id="site">
-                                    <option value="">All</option>
-                                    {% for site in sites %}
-                                        <option value="{{site.name}}">{{site.name}}</option>
-                                    {% endfor %}
-                                </select>
+                        <div class="col-md-4 offset-md-4">
+                            <label for="site">Site</label>
+                            <select class="form-control" name="site" id="site">
+                                <option value="">All</option>
+                                {% for site in sites %}
+                                    <option value="{{site.name}}">{{site.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="firstName">First Name</label>
+                            <input type="text" class="form-control" name="firstName" id="firstName" placeholder="David" value="" required>
+                            <div class="invalid-feedback">
+                                Valid first name is required.
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="firstName">First Name</label>
-                                <input type="text" class="form-control" name="firstName" id="firstName" placeholder="David" value="" required>
-                                <div class="invalid-feedback">
-                                    Valid first name is required.
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label for="lastName">Last name</label>
-                                <input type="text" class="form-control" name="lastName" id="lastName" placeholder="Smith" value="" required>
-                                <div class="invalid-feedback">
-                                    Valid first name is required.
-                                </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="lastName">Last name</label>
+                            <input type="text" class="form-control" name="lastName" id="lastName" placeholder="Smith" value="" required>
+                            <div class="invalid-feedback">
+                                Valid first name is required.
                             </div>
                         </div>
+                    </div>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="date">Start Date</label>
-                                <input type="date" class="form-control" name="date" id="date" placeholder="" value="" required>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label for="date">End Date</label>
-                                <input type="date" class="form-control" name="date" id="date" placeholder="" value="" required>
-                            </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="date">Start Date</label>
+                            <input type="date" class="form-control" name="date" id="date" placeholder="" value="" required>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-3 offset-md-4">
-                                <label for="">  </label>
-                                <button class="btn btn-primary btn-sm btn-block" type="submit">Filter</button>   
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="date">End Date</label>
+                            <input type="date" class="form-control" name="date" id="date" placeholder="" value="" required>
                         </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3 offset-md-4">
+                            <label for="">  </label>
+                            <button class="btn btn-primary btn-sm btn-block" type="submit">Filter</button>   
+                        </div>
+                    </div>
                 </form>
                 <!-- <form method="post"> -->
                 <table class="table table-striped"> 
