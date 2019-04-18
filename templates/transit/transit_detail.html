@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Visitor Transit Detail</title>
+  </head>
+  <body class="bg-light">
+      <div class="container">
+            <div class="py-5 text-center">
+                <h2>Transit Detail</h2>
+            </div>
+            <div class="col-md-8 offset-md-2">
+                <form method="get">
+                    <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="site">Site</label>
+                                <input type="text" class="form-control" id="site" value="{{data.site}}" readonly>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="type">Transport Type</label>
+                                <select class="form-control" name="type" id="type">
+                                    <option value="">All</option>
+                                    <option value="MARTA">MARTA</option>
+                                    <option value="Bus">Bus</option>
+                                    <option value="Bike">Bike</option>
+                                </select>
+                            </div>
+                        </div>
+                </form>
+                <form method="post">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                            <th scope="col"></th>
+                            <th scope="col">Route</th>
+                            <th scope="col">Transport Type</th>
+                            <th scope="col">Price</th>
+                            <th scope="col"># Connected Sites</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for transit in transits %}
+                                <tr>
+                                    <td>
+                                        <input class="form-check-input" type="radio" name="transit" id="transit" value="{{transit.TransitRoute}},{{transit.TransitType}}" required>
+                                    </td>
+                                    <td>{{transit.TransitRoute}}</td>
+                                    <td>{{transit.TransitType}}</td>
+                                    <td>{{transit.Price}}</td>
+                                    <td>{{transit.cs}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label for="">  </label>
+                            <p></p>
+                            <button class="btn btn-primary btn-sm btn-block" type="submit">Back</button>   
+                        </div>
+
+                        <div class="col-md-4 offset-md-3">
+                            <label for="date">Transit Date</label>
+                            <input type="date" class="form-control" name="date" id="date" placeholder="" value="" required>
+                            <!-- need to check functionality -->
+                            {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                                <div class="invalid-feedback">
+                                    You have already taken this transit today
+                                </div>
+                            {% endif %}
+                            {% endwith %}
+                        </div>
+                        <div class="col-md-3">
+                            <label for="">  </label>
+                            <p></p>
+                            <button class="btn btn-primary btn-sm btn-block" type="submit">Log Transit</button>   
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
