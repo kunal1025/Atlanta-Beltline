@@ -27,11 +27,59 @@ def login():
         if error is None:
             session.clear()
             session['username'] = user['username']
-            return redirect('/transit')
+            session['role'] = getRole(user['username'])
+            print(session['role'])
+            return redirect('/')
 
         flash(error)
 
     return render_template('auth/login.html')
+
+def getRole(username):
+    conn = db.get_connection()
+    adminSql = 'select username from administrator where username = %s'
+    managerSql = 'select username from manager where username = %s'
+    staffSql = 'select username from staff where username = %s'
+    visitorSql = 'select username from visitor where username = %s'
+    admin = None
+    manager = None
+    staff = None
+    visitor = None
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute(adminSql, username)
+            admin = cursor.fetchone()
+            cursor.execute(managerSql, username)
+            manager = cursor.fetchone()
+            cursor.execute(staffSql, username)
+            staff = cursor.fetchone()
+            cursor.execute(visitorSql, username)
+            visitor = cursor.fetchone()
+    except Exception as e:
+        print(e)
+        raise e
+    if (admin):
+        if (visitor):
+            return 'admin-visitor'
+        else:
+            return 'admin'
+    elif (manager):
+        if (visitor):
+            return 'manager-visitor'
+        else:
+            return 'manager'
+    elif (staff):
+        if (visitor):
+            return 'staff-visitor'
+        else:
+            return 'staff'
+    elif visitor:
+        return 'visitor'
+    else:
+        return 'user'
+
+
+
 
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
