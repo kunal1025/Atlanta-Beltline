@@ -5,7 +5,6 @@ from flask import (
 import db
 
 bp = Blueprint('transit', __name__, url_prefix='/transit')
-
 @bp.route('/create', methods=('GET', 'POST'))
 def create():
     conn = db.get_connection()
@@ -22,12 +21,12 @@ def create():
             return redirect('/')
             # return render_template('/error/500.html')
     else:
-        tranportType = request.form.get('type')
+        transportType = request.form.get('type')
         route = request.form.get('route')
         price = request.form.get('price')
         sites = request.form.getlist('sites')
 
-        # print(tranportType)
+        # print(transportType)
         # print(route)
         # print(price)
         # print(sites)
@@ -37,7 +36,6 @@ def create():
 @bp.route('/edit/<transportType>/<route>', methods=('GET', 'POST'))
 def edit(transportType, route):
     conn = db.get_connection()
-
     if request.method == 'GET':
         try:
             with conn.cursor() as cursor:
@@ -63,14 +61,14 @@ def edit(transportType, route):
                         x['siteName'] = site
                         x['checked'] = 0
                         new_getSite.append(x)
-                print(new_getSite)
-                return render_template('transit/create_transit.html', sites=sites)
+                # print(new_getSite)
+                return render_template('transit/edit_transit.html', sites=new_getSite)
         except Exception as e:
             print(e)
             return redirect('/')
             # return render_template('/error/500.html')
     else:
-        tranportType = request.form.get('type')
+        transportType = request.form.get('type')
         route = request.form.get('route')
         price = request.form.get('price')
         sites = request.form.getlist('sites')
@@ -81,3 +79,8 @@ def edit(transportType, route):
         # print(sites)
         #
         return redirect('/transit/create')
+
+@bp.route('/edit/<transportType>/<route>', methods=('GET', 'POST'))
+def edit(transportType, route):
+    conn = db.get_connection()
+    if request.method == 'GET':
