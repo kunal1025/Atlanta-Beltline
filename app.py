@@ -10,7 +10,7 @@ app.config.from_mapping(
 
 @app.route('/', methods=['GET'])
 def home_page():
-    role = session['role']
+    role = session.get('role', None)
     if (not role):
         return render_template('index.html')
     elif (role == 'admin'):
