@@ -4,4 +4,8 @@ from flask import (
 )
 import db
 
-bp = Blueprint('site', __name__, url_prefix='/site')
+bp = Blueprint('sites', __name__, url_prefix='/site')
+
+@bp.route('/', methods=['GET'])
+def idk():
+    return redirect('/')
