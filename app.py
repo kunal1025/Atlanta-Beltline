@@ -33,6 +33,8 @@ def home_page():
 app.register_blueprint(auth.bp)
 app.register_blueprint(register.bp)
 app.register_blueprint(transit.bp)
+app.register_blueprint(site.bp)
+app.register_blueprint(event.bp)
 
 
 if __name__ == '__main__':
