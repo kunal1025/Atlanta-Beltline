@@ -35,14 +35,14 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="firstName">First name</label>
-                            <input type="text" class="form-control" id="firstName" placeholder="" value="" required>
+                            <input name="firstName" type="text" class="form-control" id="firstName" placeholder="" value="" required>
                             <div class="invalid-feedback">
                                 Valid first name is required.
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
                                 <label for="lastName">Last name</label>
-                                <input type="text" class="form-control" id="lastName" placeholder="" value="" required>
+                                <input name="lastName" type="text" class="form-control" id="lastName" placeholder="" value="" required>
                                 <div class="invalid-feedback">
                                     Valid last name is required.
                                 </div>
@@ -55,7 +55,7 @@
                                 <div class="input-group-prepend">
                                 <span class="input-group-text">@</span>
                                 </div>
-                                <input type="text" class="form-control" id="username" placeholder="Username" required>
+                                <input name="username" type="text" class="form-control" id="username" placeholder="Username" required>
                                 <div class="invalid-feedback" style="width: 100%;">
                                     Your username is required.
                                 </div>
@@ -63,7 +63,7 @@
                         </div>
                         <div class="col-md-6 mb-3">
                                 <label for="userType">User Type</label>
-                                <select class="form-control" id="type">
+                                <select class="form-control" id="type" name="type">
                                     <option value="staff">Staff</option>
                                     <option value="manager">Manager</option>
                                 </select>
@@ -72,7 +72,7 @@
                     <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="password">Password</label>
-                                <input type="password" class="form-control" id="password" placeholder="" value="" required>
+                                <input name="password" type="password" class="form-control" id="password" placeholder="" value="" required>
                                 <small id="passwordHelpInline" class="text-muted">
                                     Must be 8-20 characters long.
                                 </small>
@@ -90,14 +90,14 @@
                     </div>
                     <div class="mb-3">
                         <label for="phone">Phone</label>
-                        <input type="tel" class="form-control" id="phone" placeholder="555-555-5555">
+                        <input name="phone" type="tel" class="form-control" id="phone" placeholder="555-555-5555">
                         <div class="invalid-feedback">
                             Please enter a phone number
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="address">Address</label>
-                        <input type="text" class="form-control" id="address" placeholder="1234 Main St" required>
+                        <input name="address" type="text" class="form-control" id="address" placeholder="1234 Main St" required>
                         <div class="invalid-feedback">
                             Please enter your address
                         </div>
@@ -105,14 +105,14 @@
                     <div class="row">
                         <div class="col-md-5 mb-3">
                             <label for="city">City</label>
-                            <input type="text" class="form-control" id="city" placeholder="" required>
+                            <input name="city" type="text" class="form-control" id="city" placeholder="" required>
                             <div class="invalid-feedback">
                             City required
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="state">State</label>
-                            <select class="custom-select d-block w-100" id="state" required>
+                            <select class="custom-select d-block w-100" name="state"id="state" required>
                                     <option value="">Other</option>
                                     <option value="AK">Alaska</option>
                                     <option value="AL">Alabama</option>
@@ -172,7 +172,7 @@
                         </div>
                         <div class="col-md-3 mb-3">
                             <label for="zip">Zip</label>
-                            <input type="text" class="form-control" id="zip" placeholder="" required>
+                            <input name="zipcode" type="text" class="form-control" id="zip" placeholder="" required>
                             <div class="invalid-feedback">
                             Zip code required.
                             </div>
@@ -180,7 +180,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email" placeholder="you@example.com">
+                        <input name="email[]" type="email" class="form-control" id="email" placeholder="you@example.com">
                         <div class="invalid-feedback">
                             Please enter a valid email address
                         </div>
@@ -202,11 +202,11 @@
         // Example starter JavaScript for disabling form submissions if there are invalid fields
         (function() {
             'use strict';
-    
+
             window.addEventListener('load', function() {
             // Fetch all the forms we want to apply custom Bootstrap validation styles to
             var forms = document.getElementsByClassName('needs-validation');
-    
+
             // Loop over them and prevent submission
             var validation = Array.prototype.filter.call(forms, function(form) {
                 form.addEventListener('submit', function(event) {
