@@ -23,7 +23,7 @@
                 <div class="row">
                     <div class="col-md-4 mb-3">
                         <label for="transportType">Transport Type</label>
-                        <select class="form-control" name="type" id="type">
+                        <select class="form-control" name="type" id="type" required>
                             <option value="">All</option>
                             <option value="MARTA">MARTA</option>
                             <option value="Bus">Bus</option>
@@ -32,7 +32,7 @@
                     </div>
                     <div class="col-md-4 mb-3">
                         <label for="route">Route</label>
-                        <input type="text" class="form-control" name="route" id="route" value="{{data.route}}" required>
+                        <input type="text" class="form-control" name="route" id="route" value="" required>
                         <div class="invalid-feedback">
                             Valid route is required
                         </div>
@@ -41,9 +41,9 @@
                         <label for="price">Price</label>
                         <div class="input-group">
                             <div class="input-group-prepend">
-                            <span class="input-group-text">$</span>
+                                <span class="input-group-text">$</span>
                             </div>
-                            <input type="text" class="form-control" name = "price" id="price" value="{{data.price}}" required>
+                            <input type="text" class="form-control" name = "price" id="price" value="" required>
                             <div class="invalid-feedback" style="width: 100%;">
                                 Valid price is required
                             </div>
@@ -61,7 +61,7 @@
                         {% for site in sites %}
                             <tr>
                                 <td>
-                                    <input class="form-check-input" type="checkbox" name="sites" id="transit" value="{{site.siteName}}">
+                                    <input class="form-check-input" type="checkbox" name="sites" id="site" value="{{site.siteName}}">
                                 </td>
                                 <td>{{site.siteName}}</td>
                             </tr>
@@ -71,7 +71,7 @@
                 <hr class="mb-4">
                 <div class="row">
                     <div class="col-md-4 offset-md-1">
-                        <button class="btn btn-primary btn-lg btn-block" type="submit">Back</button>
+                        <button class="btn btn-primary btn-sm btn-block" type="submit">Back</button>
                     </div>
 
                     <div class="col-md-2">
@@ -80,7 +80,7 @@
                     </div>
 
                     <div class="col-md-4">
-                        <button class="btn btn-primary btn-lg btn-block" type="submit">Update</button>
+                        <button class="btn btn-primary btn-sm btn-block" type="submit">Create</button>
                     </div>
                 </div>  
             </form>
