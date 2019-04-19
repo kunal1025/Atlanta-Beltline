@@ -15,7 +15,7 @@ def login():
         password = request.form['password']
         conn = db.get_connection()
         error = None
-        sql = 'select user.username, password from user join email where email = %s'
+        sql = 'select user.username, password from user join email on user.username = email.username where email = %s'
         with conn.cursor() as cursor:
             cursor.execute(sql, email)
             user = cursor.fetchone()
@@ -28,7 +28,6 @@ def login():
             session.clear()
             session['username'] = user['username']
             session['role'] = getRole(user['username'])
-            print(session['role'])
             return redirect('/')
 
         flash(error)

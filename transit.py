@@ -38,6 +38,36 @@ def take():
                 return redirect('/transit/take')
         return redirect('/transit/take')
 
+@bp.route('/history', methods=('GET', 'POST'))
+def history():
+    conn = db.get_connection()
+    if request.method == 'GET':
+        with conn.cursor() as cursor:
+            getSites = siteSQL = 'select name from site'
+            cursor.execute(getSites)
+            sites = cursor.fetchall()
+            return render_template('/transit/transit_history.html', sites=sites)
+    else:
+        with conn.cursor() as cursor:
+            transitType = request.form.get('type')
+            route = request.form.get('route')
+            site = request.form.getlist('site')
+            start_date = request.form.get('startDate')
+            end_date = request.form.get('endDate')
+
+            gethistory = 'SELECT TransitDate, TransitType, TransitRoute, Price FROM beltline.take JOIN beltline.transit ' \
+            'USING(TransitType, TransitRoute) WHERE (TransitDate BETWEEN %s AND %s) AND SiteName = %s AND ' \
+            'TransitRoute = %s AND TransitType = %s'
+            cursor.execute(gethistory, (start_date, end_date, site, route, transitType))
+            history = cursor.fetchall()
+
+            getSites = siteSQL = 'select name from site'
+            cursor.execute(getSites)
+            sites = cursor.fetchall()
+            return render_template('/transit/transit_history.html', history=history, sites=sites)
+
+
+
 @bp.route('/create', methods=('GET', 'POST'))
 def create():
     conn = db.get_connection()
