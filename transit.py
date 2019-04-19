@@ -22,8 +22,6 @@ def take():
             transits = cursor.fetchall()
             cursor.execute(siteSQL)
             sites = cursor.fetchall()
-            print('sites:/n')
-            print(sites)
         return render_template('/transit/takeTransit.html', transits=transits, sites=sites)
     elif request.method == 'POST':
         username = session['username']
