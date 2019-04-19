@@ -45,7 +45,7 @@ def edit(transportType, route):
                 cursor.execute(sites)
                 getSites = cursor.fetchall()
                 selectedSites = 'select SiteName as siteName from beltline.transit join beltline.connect using(TransitType, TransitRoute) ' \
-                           'where TransitRoute = %s AND TransitType = %s AND Price = price',
+                           'where TransitRoute = "%s" AND TransitType = "%s" AND Price = price'
                 cursor.execute(selectedSites)
                 getSelectedInformation = cursor.fetchall()
                 new_getSite = []
