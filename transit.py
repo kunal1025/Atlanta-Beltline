@@ -75,3 +75,47 @@ def edit(transitType, route):
         # print(sites)
         #
         return redirect('/transit/create')
+
+@bp.route('/manage', methods=('GET', 'POST'))
+def manage():
+    conn = db.get_connection()
+    if request.method == 'POST':
+        try:
+            with conn.cursor() as cursor:
+                transportType = request.form.get('type')
+                route = request.form.get("route")
+                containSite = request.form.get('site')
+                priceLow = request.form.get('lowPrice')
+                priceHigh = request.form.get('highPrice')
+
+                getSites = 'select name as siteName from site'
+                cursor.execute(getSites)
+                sites = cursor.fetchall()
+
+                getTableInfo = 'SELECT TransitType as transportType, TransitRoute as route, Count(Distinct(SiteName)) as numConnectedSites, ' \
+                               'count(Distinct(username)) as numTransitLogged, Price as price from connect join transit using(TransitType, TransitRoute)' \
+                               'join take using(TransitType, TransitRoute) WHERE TransitType = %s AND TransitRoute = %s' \
+                               'AND  SiteName = %s AND Price between %s AND %s' \
+                               'group by concat(TransitType, TransitRoute)'
+                cursor.execute(getTableInfo, (transportType, route, containSite, priceLow, priceHigh))
+                info = cursor.fetchall()
+
+                return render_template('transit/manage_transit.html', sites=sites, routes=info)
+        except Exception as e:
+            print(e)
+    else:
+        try:
+            with conn.cursor() as cursor:
+                getSites = 'select name as siteName from site'
+                cursor.execute(getSites)
+                sites = cursor.fetchall()
+
+                # getTableInfo = 'SELECT TransitType as transportType, TransitRoute as route, Count(Distinct(SiteName)) as numConnectedSites, ' \
+                #                'count(Distinct(username)) as numTransitLogged, Price as price from connect join transit using(TransitType, TransitRoute)' \
+                #                'join take using(TransitType, TransitRoute) group by concat(TransitType, TransitRoute)'
+                # cursor.execute(getTableInfo)
+                # info = cursor.fetchall()
+
+                return render_template('transit/manage_transit.html', sites=sites, routes={})
+        except Exception as e:
+            print(e)
