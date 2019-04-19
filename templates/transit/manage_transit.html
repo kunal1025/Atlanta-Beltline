@@ -1,4 +1,4 @@
-<!doctype html>
+ <!doctype html>
 <html lang="en">
   <head>
     <!-- Required meta tags -->
@@ -16,7 +16,7 @@
                 <h2>Manage Transit</h2>
             </div>
             <div class="col-md-8 offset-md-2">
-                <form method="get">
+                <form method="post">
                     <div class="row">
                             <div class="col-md-4">
                                 <label for="type">Transit Type</label>
@@ -34,23 +34,18 @@
                             </div>
 
                             <div class="col-md-5">
-                                <label for="manager">Manager</label>
-                                <select class="form-control" name="manager" id="manager">
-                                    <option value="">All</option>
-                                    {% for manager in managers %}
-                                        <option value="{{manager.name}}">{{manager.name}}</option>
-                                    {% endfor %}
-                                </select>
+                                <label for="manager">Route</label>
+                                <input type="text" class="form-control" name="route" id="routeName" placeholder="" value="" min="0">
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-5">
-                                <label for="site">Site</label>
+                                <label for="site">Contain Site</label>
                                 <select class="form-control" name="site" id="site">
                                     <option value="">All</option>
                                     {% for site in sites %}
-                                        <option value="{{site.name}}">{{site.name}}</option>
+                                        <option value="{{site.siteName}}">{{site.siteName}}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -99,7 +94,7 @@
                             </div>
                         </div>
                 </form>
-                <form method="post">
+                <form method="get">
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -115,13 +110,13 @@
                             {% for route in routes %}
                                 <tr>
                                     <td>
-                                        <input class="form-check-input" type="radio" name="route" id="route" value="{{name.route}}" required>
+                                        <input class="form-check-input" type="radio" name="name" id="route" value="{{route.route}}" required>
                                     </td>
-                                    <td>{{name.route}}</td>
-                                    <td>{{name.Transport Type}}</td>
-                                    <td>{{name.Price}}</td>
-                                    <td>{{name.# Connected Sites}}</td>
-                                    <td>{{name.# Transit Logged}}</td>
+                                    <td>{{route.route}}</td>
+                                    <td>{{route.transportType}}</td>
+                                    <td>{{route.price}}</td>
+                                    <td>{{route.numConnectedSites}}</td>
+                                    <td>{{route.numTransitLogged}}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
