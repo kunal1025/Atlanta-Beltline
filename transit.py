@@ -33,36 +33,32 @@ def create():
         #
         return redirect('/transit/create')
 
-@bp.route('/edit/<transportType>/<route>', methods=('GET', 'POST'))
-def edit(transportType, route):
+@bp.route('/edit/<transitType>/<route>', methods=('GET', 'POST'))
+def edit(transitType, route):
     conn = db.get_connection()
     if request.method == 'GET':
         try:
             with conn.cursor() as cursor:
-                sites = 'select name as siteName from site'
-                cursor.execute(sites)
-                getSites = cursor.fetchall()
-                selectedSites = 'select SiteName as siteName from beltline.transit join beltline.connect using(TransitType, TransitRoute) ' \
-                           'where TransitRoute = "%s" AND TransitType = "%s" AND Price = price'
-                cursor.execute(selectedSites)
-                getSelectedInformation = cursor.fetchall()
-                new_getSite = []
-                getSitesList = [i['siteName'] for i in getSites]
-                getSelectedInfoList = [i['siteName'] for i in getSelectedInformation]
-                for site in getSitesList:
-                    if site in getSelectedInfoList:
-                        x = {}
-                        x['siteName'] = site
-                        x['checked'] = 1
-                        new_getSite.append(x)
-
+                getAllSites = 'select name as siteName from site'
+                cursor.execute(getAllSites)
+                sites = cursor.fetchall()
+                getSelectedSites = 'select SiteName as siteName from beltline.transit join beltline.connect using(TransitType, TransitRoute) ' \
+                           'where TransitRoute = %s AND TransitType = %s AND Price = price'
+                cursor.execute(getSelectedSites, (route, transitType))
+                selectedSites = cursor.fetchall()
+                sitesList = []
+                for site in selectedSites:
+                    sitesList.append(site['siteName'])
+                for site in sites:
+                    if site['siteName'] in sitesList:
+                        site['checked'] = 1
                     else:
-                        x = {}
-                        x['siteName'] = site
-                        x['checked'] = 0
-                        new_getSite.append(x)
-                # print(new_getSite)
-                return render_template('transit/edit_transit.html', sites=new_getSite)
+                        site['checked'] = 0
+                getTransit = 'select transitType, transitRoute as route, price from transit where transitType = %s AND transitRoute = %s'
+                cursor.execute(getTransit, (transitType, route))
+                transit = cursor.fetchone()
+                print(selectedSites)
+                return render_template('transit/edit_transit.html', sites=sites, data=transit)
         except Exception as e:
             print(e)
             return redirect('/')
@@ -79,8 +75,3 @@ def edit(transportType, route):
         # print(sites)
         #
         return redirect('/transit/create')
-
-@bp.route('/edit/<transportType>/<route>', methods=('GET', 'POST'))
-def edit(transportType, route):
-    conn = db.get_connection()
-    if request.method == 'GET':
