@@ -32,9 +32,11 @@ def take():
             cursor.execute(take_transit, (username, date, transit[0], transit[1]))
             result = cursor.fetchone()
             if (result):
-                return redirect('/transit/take')
+                error = 'You have already taken this transit today'
+                flash(error)
+                return render_template('/transit/take')
             else:
-                #insert into table
+                #TODO: write query to insert to take
                 return redirect('/transit/take')
         return redirect('/transit/take')
 
