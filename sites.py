@@ -10,7 +10,7 @@ def edit(SiteName):
     conn = db.get_connection()
     if request.method == 'GET':
         with conn.cursor() as cursor:
-            siteinfo = "select Name, Address, Zipcode, Manager, OpenEveryDay from site where Name = %s"
+            siteinfo = "select FirstName, LastName, Address, Zipcode, Manager, OpenEveryDay from site JOIN user on site.Manager = user.Username where Name = %s"
             cursor.execute(siteinfo, (SiteName,))
 
             manager_drop_down = "SELECT concat(FirstName,' ',LastName) from manager join user using(Username) "\
@@ -22,7 +22,7 @@ def edit(SiteName):
             drop_down = cursor.fetchone()
             drop_down["is_selected"] = 1
             info.append(drop_down)
-            return render_template('site/edit_site.html', data=siteinfo, managers = info)
+            return render_template('site/edit_site.html', data=siteinfo, manager = info)
     else:
         name = request.form.get('name')
         zip_code = request.form.get("zipcode")
@@ -64,8 +64,8 @@ def create(SiteName):
             cursor.execute(edit_site, (newname, newaddress, newzip, newopen, newmanager))
             conn.commit()
 
-
     return redirect('/')
+    
 @bp.route('/detail/<Name>', methods=['GET'])
 def detail(Name):
     conn = db.get_connection()
