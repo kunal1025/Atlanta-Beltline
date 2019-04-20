@@ -57,9 +57,16 @@ def history():
     if request.method == 'GET':
         with conn.cursor() as cursor:
             getSites = siteSQL = 'SELECT name FROM site'
+            transitsSQL ='SELECT TransitDate, TransitType, TransitRoute, Price FROM beltline.take JOIN beltline.transit ' \
+                            'USING(TransitType, TransitRoute) JOIN connect using (TransitType, TransitRoute) '\
+                            'WHERE take.Username like "David.Smith"'
+
             cursor.execute(getSites)
             sites = cursor.fetchall()
-            return render_template('/transit/transit_history.html', sites=sites)
+            cursor.execute(transitsSQL)
+            transits = cursor.fetchall()
+            print(transits)
+            return render_template('/transit/transit_history.html', sites=sites, transits = transits)
     else:
         with conn.cursor() as cursor:
             transitType = request.form.get('type')
