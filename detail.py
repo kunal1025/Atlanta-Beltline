@@ -6,7 +6,7 @@ import db
 
 bp = Blueprint('detail', __name__, url_prefix='/detail')
 
-@bp.route('/daily/<startDate>/<endDate>/<visitDate>', methods=('GET'))
+@bp.route('/daily/<startDate>/<endDate>/<visitDate>', methods=('GET',))
 def daily(startDate, endDate, visitDate):
 	conn = db.get_connection()
 	try:
