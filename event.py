@@ -6,10 +6,11 @@ import db
 
 bp = Blueprint('event', __name__, url_prefix='/event')
 
+#create() doesn't work
 @bp.route('/create', methods=('GET', 'POST'))
 def create():
     conn = db.get_connection()
-    if request.method == 'POST':
+    if request.method == 'GET':
         try:
             with conn.cursor() as cursor:
                 name = request.form.get('name')
@@ -19,36 +20,33 @@ def create():
                 startDate = request.form.get('startDate')
                 endDate = request.form.get('endDate')
 
-                # if (startDate < endDate):
-                #     print("Start Date should come before End Date")
+                assignStaff = 'for username in checked_staff:' \
+                              'INSERT into assign_to(Username, %s, %s, siteName);'
+                cursor.execute(assignStaff, (name, startDate))
+                assignStaff = cursor.fetchall()
+                print(assignStaff)
 
-                # getSites = 'select name as siteName from site'
-                # cursor.execute(getSites)
-                # sites = cursor.fetchall()
-
-                getAssignStaffList = 'SELECT staff.username as name, CONCAT(user.FirstName, ' ', user.LastName) FROM staff NATURAL JOIN ' \
-                                     'user WHERE staff.username NOT IN (SELECT username FROM beltline.staff_busy' \
-                                     'WHERE (StartDate between CAST(%s AS DATE) AND CAST(%s AS DATE)) ' \
-                                     'OR (EndDate between CAST(%s AS DATE) AND CAST(%s AS DATE)))'
-                cursor.execute(getAssignStaffList, (startDate, endDate, startDate, endDate))
-                assignStaffList = cursor.fetchall()
-
-                return render_template('transit/manage_transit.html', data=assignStaffList)
+                return render_template('transit/create_event.html', staffData=assignStaff)
         except Exception as e:
             print(e)
     else:
+        print("it was else block")
         try:
             with conn.cursor() as cursor:
-                getSites = 'select name as siteName from site'
-                cursor.execute(getSites)
-                sites = cursor.fetchall()
+                startDate = request.form.get('startDate')
+                endDate = request.form.get('endDate')
 
-                # getTableInfo = 'SELECT TransitType as transportType, TransitRoute as route, Count(Distinct(SiteName)) as numConnectedSites, ' \
-                #                'count(Distinct(username)) as numTransitLogged, Price as price from connect join transit using(TransitType, TransitRoute)' \
-                #                'join take using(TransitType, TransitRoute) group by concat(TransitType, TransitRoute)'
-                # cursor.execute(getTableInfo)
-                # info = cursor.fetchall()
+                getAvailableStaff = 'SELECT staff.username, CONCAT(user.FirstName, ' ', user.LastName) FROM staff NATURAL JOIN ' \
+                                     'user WHERE staff.username NOT IN (SELECT username FROM beltline.staff_busy' \
+                                     'WHERE (StartDate between CAST(%s AS DATE) AND CAST(%s AS DATE)) ' \
+                                     'OR (EndDate between CAST(%s AS DATE) AND CAST(%s AS DATE)))'
+                cursor.execute(getAvailableStaff, (startDate, endDate, startDate, endDate))
+                availableStaff = cursor.fetchall()
 
-                return render_template('transit/manage_transit.html', sites=sites, routes={})
+                return render_template('transit/create_event.html', staffData=availableStaff)
         except Exception as e:
             print(e)
+
+# @bp.route('/create', methods=('GET', 'POST'))
+# def edit():
+#     conn = db.get_connection()
