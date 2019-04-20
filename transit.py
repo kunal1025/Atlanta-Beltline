@@ -57,12 +57,15 @@ def history():
             start_date = request.form.get('startDate')
             end_date = request.form.get('endDate')
 
-            gethistory = 'SELECT TransitDate, TransitType, TransitRoute, Price FROM beltline.take JOIN beltline.transit ' \
-            'USING(TransitType, TransitRoute) WHERE (TransitDate BETWEEN %s AND %s) AND SiteName = %s AND ' \
-            'TransitRoute = %s AND TransitType = %s'
+            gethistory = 'SELECT TransitDate as date, TransitType as type, TransitRoute as route, Price as price FROM beltline.take JOIN beltline.transit '\
+            'USING(TransitType, TransitRoute) JOIN connect using (TransitType, TransitRoute) '\
+            'WHERE (TransitDate BETWEEN %s AND %s) AND %s in '\
+            '(Select SiteName from connect WHERE TransitRoute = %s AND TransitType = %s)'
+
             cursor.execute(gethistory, (start_date, end_date, site, route, transitType))
             history = cursor.fetchall()
-
+            print('jistory\n')
+            print(history)
             getSites = siteSQL = 'select name from site'
             cursor.execute(getSites)
             sites = cursor.fetchall()
