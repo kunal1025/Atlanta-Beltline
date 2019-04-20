@@ -149,12 +149,7 @@ def edit(transitType, route):
         price = request.form.get('price')
         sites = request.form.getlist('sites')
 
-        # print(tranportType)
-        # print(route)
-        # print(price)
-        # print(sites)
-        #
-        return redirect('/transit/create')
+        return redirect('/transit/edit/' + transitType + '/' + route)
 
 @bp.route('/manage', methods=('GET', 'POST'))
 def manage():
