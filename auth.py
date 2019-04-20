@@ -124,7 +124,7 @@ def manage():
                 insertemail = "INSERT into beltline.email values(%s, %s)"
                 cursor.execute(insertemail, (username, email))
                 conn.commit()
-                if isVisitor = True:
+                if isVisitor == True:
                     #check if in visitor table (look take transit)
                     result = cursor.fetchone()
                     if not result:
@@ -136,5 +136,3 @@ def manage():
                     deleteuser = "DELETE from visitor where Username = %s"
                     cursor.execute(deleteuser, (username))
             return redirect('/manage/profile')
-
-
