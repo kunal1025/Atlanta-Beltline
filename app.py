@@ -1,6 +1,6 @@
 from flask import Flask
 from flask import render_template, redirect, session, request
-import auth, register, transit, sites, event
+import auth, register, transit, sites, event, detail
 import db
 
 app = Flask(__name__)
@@ -35,6 +35,7 @@ app.register_blueprint(register.bp)
 app.register_blueprint(transit.bp)
 app.register_blueprint(sites.bp)
 app.register_blueprint(event.bp)
+app.register_blueprint(detail.bp)
 
 
 if __name__ == '__main__':
