@@ -22,13 +22,13 @@ def home_page():
     elif (role == 'manager-visitor'):
         return render_template('/functionality/manager_visitor_functionality.html')
     elif (role == 'staff'):
-        return render_template('/functionality/staff_only_functionality')
+        return render_template('/functionality/staff_only_functionality.html')
     elif (role == 'staff-visitor'):
-        return render_template('/functionality/staff_visitor_functionality')
+        return render_template('/functionality/staff_visitor_functionality.html')
     elif (role == 'visitor'):
-        return render_template('/functionality/visitor_functionality')
+        return render_template('/functionality/visitor_functionality.html')
     else:
-        return render_template('/functionality/user_functionality')
+        return render_template('/functionality/user_functionality.html')
 
 app.register_blueprint(auth.bp)
 app.register_blueprint(register.bp)

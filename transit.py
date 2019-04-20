@@ -5,6 +5,69 @@ from flask import (
 import db
 
 bp = Blueprint('transit', __name__, url_prefix='/transit')
+
+@bp.route('/take', methods=('GET', 'POST'))
+def take():
+    conn = db.get_connection()
+    error = None
+    if request.method == 'GET':
+        site = request.args.get('site')
+        transport_type = request.args.get('type')
+        low_price = request.args.get('lowPrice')
+        high_price = request.args.get('highPrice')
+        transitSQL = 'select t.transitType as TransitType, t.transitRoute as TransitRoute, t.Price, count(*) as cs from transit t join connect c where t.TransitType = c.TransitType AND t.TransitRoute = c.TransitRoute group by t.TransitType, t.TransitRoute'
+        siteSQL = 'select name from site'
+        with conn.cursor() as cursor:
+            cursor.execute(transitSQL)
+            transits = cursor.fetchall()
+            cursor.execute(siteSQL)
+            sites = cursor.fetchall()
+        return render_template('/transit/takeTransit.html', transits=transits, sites=sites)
+    elif request.method == 'POST':
+        username = session['username']
+        transit = request.form.get('transit').split(',')
+        date = request.form.get('date')
+        take_transit = 'select username from take where username = %s AND TransitDate = %s AND TransitRoute = %s AND TransitType = %s'
+        with conn.cursor() as cursor:
+            cursor.execute(take_transit, (username, date, transit[0], transit[1]))
+            result = cursor.fetchone()
+            if (result):
+                return redirect('/transit/take')
+            else:
+                #insert into table
+                return redirect('/transit/take')
+        return redirect('/transit/take')
+
+@bp.route('/history', methods=('GET', 'POST'))
+def history():
+    conn = db.get_connection()
+    if request.method == 'GET':
+        with conn.cursor() as cursor:
+            getSites = siteSQL = 'select name from site'
+            cursor.execute(getSites)
+            sites = cursor.fetchall()
+            return render_template('/transit/transit_history.html', sites=sites)
+    else:
+        with conn.cursor() as cursor:
+            transitType = request.form.get('type')
+            route = request.form.get('route')
+            site = request.form.getlist('site')
+            start_date = request.form.get('startDate')
+            end_date = request.form.get('endDate')
+
+            gethistory = 'SELECT TransitDate, TransitType, TransitRoute, Price FROM beltline.take JOIN beltline.transit ' \
+            'USING(TransitType, TransitRoute) WHERE (TransitDate BETWEEN %s AND %s) AND SiteName = %s AND ' \
+            'TransitRoute = %s AND TransitType = %s'
+            cursor.execute(gethistory, (start_date, end_date, site, route, transitType))
+            history = cursor.fetchall()
+
+            getSites = siteSQL = 'select name from site'
+            cursor.execute(getSites)
+            sites = cursor.fetchall()
+            return render_template('/transit/transit_history.html', history=history, sites=sites)
+
+
+
 @bp.route('/create', methods=('GET', 'POST'))
 def create():
     conn = db.get_connection()
