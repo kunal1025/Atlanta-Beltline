@@ -6,11 +6,12 @@ import db
 
 bp = Blueprint('event', __name__, url_prefix='/event')
 
-#create() doesn't work
+
+#fix me
 @bp.route('/create', methods=('GET', 'POST'))
 def create():
     conn = db.get_connection()
-    if request.method == 'GET':
+    if request.method == 'POST':
         try:
             with conn.cursor() as cursor:
                 name = request.form.get('name')
@@ -26,7 +27,7 @@ def create():
                 assignStaff = cursor.fetchall()
                 print(assignStaff)
 
-                return render_template('transit/create_event.html', staffData=assignStaff)
+                return render_template('/event/create_event.html', staffData=assignStaff)
         except Exception as e:
             print(e)
     else:
@@ -43,10 +44,51 @@ def create():
                 cursor.execute(getAvailableStaff, (startDate, endDate, startDate, endDate))
                 availableStaff = cursor.fetchall()
 
-                return render_template('transit/create_event.html', staffData=availableStaff)
+                return render_template('/event/create_event.html', staffData=availableStaff)
         except Exception as e:
             print(e)
 
-# @bp.route('/create', methods=('GET', 'POST'))
-# def edit():
-#     conn = db.get_connection()
+#fix me
+@bp.route('/explore', methods=('GET', 'POST'))
+def explore():
+    conn = db.get_connection()
+    if request.method == "GET":
+        try:
+            with conn.cursor() as cursor:
+                # name = request.form.get('name')
+                # desc = request.form.get('desc')
+                siteName = request.form.get('site')
+                # startDate = request.form.get('startDate')
+                # endDate = request.form.get('endDate')
+                # minVisit = request.form.get('minVisit')
+                # maxVisit = request.form.get('maxVisit')
+                # minPrice = request.form.get('minPrice')
+                # maxVisit = request.form.get('maxVisit')
+
+                getSites = 'select Name as siteName from site'
+                cursor.execute(getSites)
+                sites = cursor.fetchall()
+                print(sites)
+
+                return render_template('/event/explore_event.html', sites=sites)
+        except Exception as e:
+            print(e)
+    else:
+        # with conn.cursor() as cursor:
+            # name = request.form.get('name')
+            # desc = request.form.get('desc')
+            # siteName = request.form.get('siteName')
+            # startDate = request.form.get('startDate')
+            # endDate = request.form.get('endDate')
+            # minVisit = request.form.get('minVisit')
+            # maxVisit = request.form.get('maxVisit')
+            # minPrice = request.form.get('minPrice')
+            # maxVisit = request.form.get('maxVisit')
+
+            # getSites = 'select name from site'
+            # cursor.execute(getSites)
+            # sites = cursor.fetchall()
+
+            return render_template('/')
+
+
