@@ -15,8 +15,8 @@ def take():
         transport_type = request.args.get('type')
         low_price = request.args.get('lowPrice')
         high_price = request.args.get('highPrice')
-        transitSQL = 'select t.transitType as TransitType, t.transitRoute as TransitRoute, t.Price, count(*) as cs from transit t join connect c where t.TransitType = c.TransitType AND t.TransitRoute = c.TransitRoute group by t.TransitType, t.TransitRoute'
-        siteSQL = 'select name from site'
+        transitSQL = 'SELECT t.transitType as TransitType, t.transitRoute as TransitRoute, t.Price, count(*) as cs from transit t join connect c where t.TransitType = c.TransitType AND t.TransitRoute = c.TransitRoute group by t.TransitType, t.TransitRoute'
+        siteSQL = "SELECT name FROM site"
         with conn.cursor() as cursor:
             cursor.execute(transitSQL)
             transits = cursor.fetchall()
@@ -27,14 +27,18 @@ def take():
         username = session['username']
         transit = request.form.get('transit').split(',')
         date = request.form.get('date')
-        take_transit = 'select username from take where username = %s AND TransitDate = %s AND TransitRoute = %s AND TransitType = %s'
+        take_transit = 'SELECT username from take where username = %s AND TransitDate = %s AND TransitRoute = %s AND TransitType = %s'
         with conn.cursor() as cursor:
             cursor.execute(take_transit, (username, date, transit[0], transit[1]))
             result = cursor.fetchone()
             if (result):
-                return redirect('/transit/take')
+                error = 'You have already taken this transit today'
+                flash(error)
+                return render_template('/transit/take')
             else:
-                #insert into table
+                takeSQL = "INSERT INTO take (username = %s, TransitType = %s, TransitRoute = %s, TransitDate = %s)"
+                cursor.execute(takeSQL, (username, transit[0], transit[1], date))
+                result = cursor.fetchone()
                 return redirect('/transit/take')
         return redirect('/transit/take')
 
@@ -43,7 +47,7 @@ def history():
     conn = db.get_connection()
     if request.method == 'GET':
         with conn.cursor() as cursor:
-            getSites = siteSQL = 'select name from site'
+            getSites = siteSQL = 'SELECT name FROM site'
             cursor.execute(getSites)
             sites = cursor.fetchall()
             return render_template('/transit/transit_history.html', sites=sites)
@@ -61,7 +65,7 @@ def history():
             cursor.execute(gethistory, (start_date, end_date, site, route, transitType))
             history = cursor.fetchall()
 
-            getSites = siteSQL = 'select name from site'
+            getSites = siteSQL = 'SELECT name from site'
             cursor.execute(getSites)
             sites = cursor.fetchall()
             return render_template('/transit/transit_history.html', history=history, sites=sites)
@@ -74,7 +78,7 @@ def create():
     if request.method == 'GET':
         try:
             with conn.cursor() as cursor:
-                getSites = 'select name as siteName from site'
+                getSites = 'SELECT name as siteName from site'
                 cursor.execute(getSites)
                 sites = cursor.fetchall()
                 # print(sites)
@@ -102,11 +106,10 @@ def edit(transitType, route):
     if request.method == 'GET':
         try:
             with conn.cursor() as cursor:
-                getAllSites = 'select name as siteName from site'
+                getAllSites = 'SELECT name as siteName from site'
                 cursor.execute(getAllSites)
                 sites = cursor.fetchall()
-                getSelectedSites = 'select SiteName as siteName from beltline.transit join beltline.connect using(TransitType, TransitRoute) ' \
-                           'where TransitRoute = %s AND TransitType = %s AND Price = price'
+                getSelectedSites = 'SELECT SiteName as siteName from beltline.transit join beltline.connect using(TransitType, TransitRoute) WHERE TransitRoute = %s AND TransitType = %s AND Price = price'
                 cursor.execute(getSelectedSites, (route, transitType))
                 selectedSites = cursor.fetchall()
                 sitesList = []
@@ -117,7 +120,7 @@ def edit(transitType, route):
                         site['checked'] = 1
                     else:
                         site['checked'] = 0
-                getTransit = 'select transitType, transitRoute as route, price from transit where transitType = %s AND transitRoute = %s'
+                getTransit = 'SELECT transitType, transitRoute as route, price from transit where transitType = %s AND transitRoute = %s'
                 cursor.execute(getTransit, (transitType, route))
                 transit = cursor.fetchone()
                 print(selectedSites)

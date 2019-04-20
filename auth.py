@@ -98,3 +98,10 @@ def manage():
             email = emails[0]
             del emails[0]
             return render_template('/auth/manage_profile.html', data=user, em=email, emails=emails)
+    else:
+        first_name = request.form.get('firstName')
+        last_name = request.form.get('lastName')
+        phone = request.form.get('phone')
+        emails = request.form.getlist('email')
+        isVisitor = request.form.get('isVisitor')
+        with conn.cursor() as cursor:
