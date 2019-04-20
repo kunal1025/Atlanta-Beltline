@@ -36,7 +36,9 @@ def take():
                 flash(error)
                 return render_template('/transit/take')
             else:
-                takeSQL = "INSERT INTO take (username = %s, transit[0] = %s, transit[1] = %s, date = %s )"
+                takeSQL = "INSERT INTO take (username = %s, TransitType = %s, TransitRoute = %s, TransitDate = %s)"
+                cursor.execute(takeSQL, (username, transit[0], transit[1], date))
+                result = cursor.fetchone()
                 return redirect('/transit/take')
         return redirect('/transit/take')
 
