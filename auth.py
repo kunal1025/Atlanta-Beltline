@@ -87,6 +87,7 @@ def logout():
 def manage():
     conn = db.get_connection()
     if request.method == 'GET':
+        username = session["username"]
         with conn.cursor() as cursor:
             getUser = 'SELECT FirstName as firstName, LastName as lastName, Username as username, EMPLOYEEID as employeeID, Phone as phone, Address as address, Zipcode as zip, State as state FROM ' \
             'beltline.employee JOIN beltline.user using(Username) WHERE username = %s'
@@ -99,10 +100,41 @@ def manage():
             del emails[0]
             return render_template('/auth/manage_profile.html', data=user, em=email, emails=emails)
     else:
+        username = session["username"]
         first_name = request.form.get('firstName')
         last_name = request.form.get('lastName')
         phone = request.form.get('phone')
         emails = request.form.getlist('email')
         isVisitor = request.form.get('isVisitor')
         with conn.cursor() as cursor:
-            return redirect('/')
+            #update first,last, - user table
+            names = "UPDATE user SET FirstName = %s, LastName = %s, WHERE Username = %s"
+            cursor.execute(names, (first_name,last_name, username))
+            conn.commit()
+            #update phones - employee
+            phones = "UPDATE employee SET Phone = %s WHERE Username = %s"
+            cursor.execute(phones, (phone))
+            conn.commit()
+            #DELETE every row with username
+            deleteemail = "DELETE from email where Email = %s"
+            cursor.execute(deleteemail, (emails))
+            conn.commit()
+            for email in emails:
+                #insert email, username into email (right order)
+                insertemail = "INSERT into beltline.email values(%s, %s)"
+                cursor.execute(insertemail, (username, email))
+                conn.commit()
+                if isVisitor = True:
+                    #check if in visitor table (look take transit)
+                    result = cursor.fetchone()
+                    if not result:
+                        #insert user into visitor table
+                        something = "INSERT into visitor values(%s)"
+                        cursor.execute(something, (username))
+                else:
+                #delete from visitor table
+                    deleteuser = "DELETE from visitor where Username = %s"
+                    cursor.execute(deleteuser, (username))
+            return redirect('/manage/profile')
+
+
