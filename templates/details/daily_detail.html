@@ -16,7 +16,7 @@
                 <h2>Daily Detail</h2>
             </div>
             <div class="col-md-8 offset-md-2">
-                <!-- <form method="post"> -->
+                <form method="post">
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -29,10 +29,10 @@
                         <tbody>
                             {% for data in dataDB %}
                                 <tr>
-                                    <td>{{data.Event Name}}</td>
-                                    <td>{{data.Staff Names}}</td>
-                                    <td>{{data.Visits}}</td>
-                                    <td>{{data.Revenue ($)}}</td>
+                                    <td>{{data.eventName}}</td>
+                                    <td>{{data.staffNames}}</td>
+                                    <td>{{data.visits}}</td>
+                                    <td>{{data.revenue}}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -44,6 +44,6 @@
                             <button class="btn btn-primary btn-sm btn-block" type="submit">Back</button>   
                         </div>
                     </div>
-                <!-- </form> -->
+                </form>
             </div>
         </div>

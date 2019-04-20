@@ -36,11 +36,11 @@
 
                     <div class="row">
                         <div class="col-md-4">
-                            <label for="site">Site Name</label>
-                            <select class="form-control" name="site" id="site">
+                            <label for="siteName">Site Name</label>
+                            <select class="form-control" name="name" id="siteName">
                                 <option value="">All</option>
                                 {% for site in sites %}
-                                    <option value="{{site.name}}">{{site.name}}</option>
+                                    <option value="{{siteName.name}}">{{siteName.name}}</option>
                                 {% endfor %}
                             </select>
                         </div>

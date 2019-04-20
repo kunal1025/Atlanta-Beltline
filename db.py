@@ -20,6 +20,6 @@ def get_connection():
             print(e)
             sys.exit(0)
     return _connection
-
+#os.getenv('PASSWORD')
 # List of stuff accessible to importers of this module. Just in case
 __all__ = [ 'getConnection' ]

@@ -1,6 +1,6 @@
 from flask import Flask
 from flask import render_template, redirect, session, request
-import auth, register, transit, sites, event
+import auth, register, transit, sites, event, detail
 import db
 
 app = Flask(__name__)
@@ -22,19 +22,20 @@ def home_page():
     elif (role == 'manager-visitor'):
         return render_template('/functionality/manager_visitor_functionality.html')
     elif (role == 'staff'):
-        return render_template('/functionality/staff_only_functionality')
+        return render_template('/functionality/staff_only_functionality.html')
     elif (role == 'staff-visitor'):
-        return render_template('/functionality/staff_visitor_functionality')
+        return render_template('/functionality/staff_visitor_functionality.html')
     elif (role == 'visitor'):
-        return render_template('/functionality/visitor_functionality')
+        return render_template('/functionality/visitor_functionality.html')
     else:
-        return render_template('/functionality/user_functionality')
+        return render_template('/functionality/user_functionality.html')
 
 app.register_blueprint(auth.bp)
 app.register_blueprint(register.bp)
 app.register_blueprint(transit.bp)
 app.register_blueprint(sites.bp)
 app.register_blueprint(event.bp)
+app.register_blueprint(detail.bp)
 
 
 if __name__ == '__main__':

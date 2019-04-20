@@ -33,9 +33,9 @@ def register_user():
                 insertVisitor = 'INSERT INTO beltline.visitor (%s)'
                 insertEmail = 'INSERT INTO beltline.email (%s, %s)'
                 cursor.execute(insertUser, (username, hashed_password, first_name, last_name))
-                cursor.commit()
+                conn.commit()
                 cursor.execute(insertVisitor, (username))
-                cursor.commit()
+                conn.commit()
                 for email in emails:
                     cursor.execute(insertEmail, (username, email))
                 cursor.commit()
@@ -67,9 +67,9 @@ def register_visitor():
                 insertVisitor = 'INSERT INTO beltline.visitor (%s)'
                 insertEmail = 'INSERT INTO beltline.email (%s, %s)'
                 cursor.execute(insertUser, (username, hashed_password, first_name, last_name))
-                cursor.commit()
+                conn.commit()
                 cursor.execute(insertVisitor, username)
-                cursor.commit()
+                conn.commit()
                 for email in emails:
                     cursor.execute(insertEmail, (username, email))
                 cursor.commit()
@@ -112,13 +112,13 @@ def register_employee():
                 else:
                     insertStaff = 'INSERT INTO beltline.staff (%s)'
                 cursor.execute(insertUser, (username, hashed_password, first_name, last_name))
-                cursor.commit()
+                conn.commit()
                 cursor.execute(insertEmployee, (username, employeeID, phone, address, city, state, zipcode))
-                cursor.commit()
+                conn.commit()
                 cursor.execute(insertManager, (username))
-                cursor.commit()
+                conn.commit()
                 cursor.execute(insertStaff, (username))
-                cursor.commit()
+                conn.commit()
                 for email in emails:
                     cursor.execute(insertEmail, (username, email))
                 cursor.commit()
@@ -161,18 +161,18 @@ def register_employee_visitor():
                 else:
                     insertStaff = 'INSERT INTO beltline.staff (%s)'
                 cursor.execute(insertUser, (username, hashed_password, first_name, last_name))
-                cursor.commit()
+                conn.commit()
                 cursor.execute(insertEmployee, (username, employeeID, phone, address, city, state, zipcode))
-                cursor.commit()
+                conn.commit()
                 cursor.execute(insertManager, (username))
-                cursor.commit()
+                conn.commit()
                 cursor.execute(insertStaff, (username))
-                cursor.commit()
+                conn.commit()
                 cursor.execute(insertVisitor, username)
-                cursor.commit()
+                conn.commit()
                 for email in emails:
                     cursor.execute(insertEmail, (username, email))
-                cursor.commit()
+                conn.commit()
         except Exception as e:
             print(e)
             #return render_template('/error/500.html')

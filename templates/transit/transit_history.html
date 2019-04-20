@@ -14,10 +14,10 @@
   <body class="bg-light">
     <div class="container">
         <div class="py-5 text-center">
-            <h2>Take Transit</h2>
+            <h2>Transit History</h2>
         </div>
         <div class="col-md-8 offset-md-2">
-            <form method="get">
+            <form method="post">
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="site">Site</label>
@@ -69,8 +69,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for transit in transits %}
-                        <tr>]
+                    {% for transit in history %}
+                        <tr>
                             <td>{{transit.date}}</td>
                             <td>{{transit.route}}</td>
                             <td>{{transit.type}}</td>
@@ -79,5 +79,8 @@
                     {% endfor %}
                 </tbody>
             </table>
+            <a href="/">
+                <button class="btn btn-primary btn-md btn-block" type="button">Back</button> 
+            </a>
     </div>
   </body>
