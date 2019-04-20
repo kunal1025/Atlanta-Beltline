@@ -43,11 +43,14 @@ def take():
             if (result):
                 error = 'You have already taken this transit today'
                 flash(error)
-                return render_template('/transit/take')
+                siteSQL = "SELECT name FROM site"
+                cursor.execute(siteSQL)
+                sites = cursor.fetchall()
+                return render_template('/transit/takeTransit.html', sites=sites)
             else:
-                takeSQL = "INSERT INTO take (username = %s, TransitType = %s, TransitRoute = %s, TransitDate = %s)"
-                cursor.execute(takeSQL, (username, transit[0], transit[1], date))
-                result = cursor.fetchone()
+                takeSQL = 'INSERT INTO beltline.take values (%s, %s, %s, %s)'
+                cursor.execute(takeSQL, (username, transit[1], transit[0], date))
+                conn.commit()
                 return redirect('/transit/take')
         return redirect('/transit/take')
 
@@ -75,9 +78,11 @@ def history():
             start_date = request.form.get('startDate')
             end_date = request.form.get('endDate')
 
-            gethistory = 'SELECT TransitDate, TransitType, TransitRoute, Price FROM beltline.take JOIN beltline.transit ' \
-            'USING(TransitType, TransitRoute) WHERE (TransitDate BETWEEN %s AND %s) AND SiteName = %s AND ' \
-            'TransitRoute = %s AND TransitType = %s'
+            gethistory = 'SELECT TransitDate as date, TransitType as type, TransitRoute as route, Price as price FROM beltline.take JOIN beltline.transit '\
+            'USING(TransitType, TransitRoute) JOIN connect using (TransitType, TransitRoute) '\
+            'WHERE (TransitDate BETWEEN %s AND %s) AND %s in '\
+            '(Select SiteName from connect WHERE TransitRoute = %s AND TransitType = %s)'
+
             cursor.execute(gethistory, (start_date, end_date, site, route, transitType))
             history = cursor.fetchall()
 
