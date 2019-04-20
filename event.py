@@ -41,7 +41,7 @@ def create():
                                      'user WHERE staff.username NOT IN (SELECT username FROM beltline.staff_busy' \
                                      'WHERE (StartDate between CAST(%s AS DATE) AND CAST(%s AS DATE)) ' \
                                      'OR (EndDate between CAST(%s AS DATE) AND CAST(%s AS DATE)))'
-                cursor.execute(getAvailableStaff, (startDate, endDate, startDate, endDate))
+                cursor.execute(getAvailableStaff, ('01-01-1999', '01-01-2018', '01-01-1999', '01-01-2018'))
                 availableStaff = cursor.fetchall()
 
                 return render_template('/event/create_event.html', staffData=availableStaff)
