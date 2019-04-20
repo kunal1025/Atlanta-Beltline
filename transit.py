@@ -15,10 +15,17 @@ def take():
         transport_type = request.args.get('type')
         low_price = request.args.get('lowPrice')
         high_price = request.args.get('highPrice')
-        transitSQL = 'SELECT t.transitType as TransitType, t.transitRoute as TransitRoute, t.Price, count(*) as cs from transit t join connect c where t.TransitType = c.TransitType AND t.TransitRoute = c.TransitRoute group by t.TransitType, t.TransitRoute'
+        #transitSQL = 'SELECT t.transitType as TransitType, t.transitRoute as TransitRoute, t.Price, count(*) as cs from transit t join connect c where t.TransitType = c.TransitType AND t.TransitRoute = c.TransitRoute group by t.TransitType, t.TransitRoute'
+        transitSQL = 'SELECT TransitType, TransitRoute, Price, count(*) as cs FROM beltline.transit JOIN '\
+        'beltline.connect using(TransitType, TransitRoute) '\
+        'WHERE %s in (Select SiteName from connect WHERE TransitType = %s) '\
+        'AND (Price BETWEEN %s AND %s) '\
+        'AND TransitType = %s '\
+        'GROUP BY TransitType, TransitRoute'
+
         siteSQL = "SELECT name FROM site"
         with conn.cursor() as cursor:
-            cursor.execute(transitSQL)
+            cursor.execute(transitSQL, (site, transport_type, low_price, high_price, transport_type))
             transits = cursor.fetchall()
             cursor.execute(siteSQL)
             sites = cursor.fetchall()
@@ -34,11 +41,14 @@ def take():
             if (result):
                 error = 'You have already taken this transit today'
                 flash(error)
-                return render_template('/transit/take')
+                siteSQL = "SELECT name FROM site"
+                cursor.execute(siteSQL)
+                sites = cursor.fetchall()
+                return render_template('/transit/takeTransit.html', sites=sites)
             else:
-                takeSQL = "INSERT INTO take (username = %s, TransitType = %s, TransitRoute = %s, TransitDate = %s)"
-                cursor.execute(takeSQL, (username, transit[0], transit[1], date))
-                result = cursor.fetchone()
+                takeSQL = 'INSERT INTO beltline.take values (%s, %s, %s, %s)'
+                cursor.execute(takeSQL, (username, transit[1], transit[0], date))
+                conn.commit()
                 return redirect('/transit/take')
         return redirect('/transit/take')
 

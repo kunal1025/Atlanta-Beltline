@@ -105,3 +105,4 @@ def manage():
         emails = request.form.getlist('email')
         isVisitor = request.form.get('isVisitor')
         with conn.cursor() as cursor:
+            return redirect('/')
