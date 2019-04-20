@@ -6,6 +6,12 @@ import db
 
 bp = Blueprint('transit', __name__, url_prefix='/transit')
 
+def ifnull(var,value):
+    if var == '' or var is None:
+        return value
+    else:
+        return var.replace("'", "")
+
 @bp.route('/take', methods=('GET', 'POST'))
 def take():
     conn = db.get_connection()
@@ -15,10 +21,13 @@ def take():
         transport_type = request.args.get('type')
         low_price = request.args.get('lowPrice')
         high_price = request.args.get('highPrice')
-        transitSQL = 'SELECT t.transitType as TransitType, t.transitRoute as TransitRoute, t.Price, count(*) as cs from transit t join connect c where t.TransitType = c.TransitType AND t.TransitRoute = c.TransitRoute group by t.TransitType, t.TransitRoute'
+        transitSQL = 'SELECT t.transitType as TransitType, t.transitRoute as TransitRoute, t.Price, count(*) as cs from transit t join connect c on t.TransitType = c.TransitType AND t.TransitRoute = c.TransitRoute ' \
+                        'WHERE c.SiteName like %s AND t.transitType like %s AND (t.Price BETWEEN %s AND %s) ' \
+                        'group by t.TransitType, t.TransitRoute' \
+
         siteSQL = "SELECT name FROM site"
         with conn.cursor() as cursor:
-            cursor.execute(transitSQL)
+            cursor.execute(transitSQL, (ifnull(site, "%"), ifnull(transport_type, "%"), ifnull(low_price, 0), ifnull(high_price, 100000)))
             transits = cursor.fetchall()
             cursor.execute(siteSQL)
             sites = cursor.fetchall()
