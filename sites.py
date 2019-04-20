@@ -87,6 +87,11 @@ def detail(Name):
 
     return redirect('sites/site_detail.html', data=sites)
 
+
+
+
+
+
 @bp.route('/history', methods=('GET',))
 def history():
     conn = db.get_connection()
@@ -102,13 +107,18 @@ def history():
             cursor.execute(visit_history, (username, ifnull(startdate, "%"), ifnull(enddate, "%"), ifnull(eventname, "%"), username))
             visit_history = cursor.fetchall()
 
-            sites = "SELECT site.Name from site"
+            sites = "SELECT site.Name AS site from beltline.site"
             cursor.execute(sites)
-            sites = cursor.fetchall()
+            dict_sites = cursor.fetchall()
+            a_list = []
+            for i in dict_sites:
+                for k,v in i.items():
+                    a_list.append(v)
+            sites = a_list
+
+
 
         return render_template('visit_history.html', data=visit_history, site=sites)
-
-
 
 
 

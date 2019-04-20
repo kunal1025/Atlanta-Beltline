@@ -22,7 +22,6 @@ def history():
             visit_history = cursor.fetchall()
 
             sites = "SELECT site.Name from site"
-            cursor.execute(sites)
-            sites = cursor.fetchall()
+            sites = cursor.execute(sites)
 
         return render_template('visit/visit_history.html', data=visit_history, site = sites)
