@@ -16,7 +16,7 @@
                 <h2>Manage Site</h2>
             </div>
             <div class="col-md-8 offset-md-2">
-                <form method="get">
+                <form method="POST">
                     <div class="row">
                             <div class="col-md-4">
                                 <label for="site">Site</label>
@@ -48,8 +48,8 @@
                             <div class="col-md-4 offset-md-4">
                                 <label for="site">Open Everyday</label>
                                 <select class="form-control" name="type" id="type">
-                                    <option value="">Yes</option>
-                                    <option value="MARTA">No</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
                                 </select>
                             </div>
                         </div>
@@ -57,7 +57,7 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <label for="">  </label>
-                                <button class="btn btn-primary btn-sm btn-block" type="submit">Filter</button>   
+                                <button class="btn btn-primary btn-sm btn-block" type="submit">Filter</button>
                             </div>
                             <div class="col-md-1">
                                 <label for=""> </label>
@@ -65,19 +65,19 @@
                             </div>
                             <div class="col-md-2 offset-md-2">
                                 <label for="">  </label>
-                                <button class="btn btn-primary btn-sm btn-block" type="submit">Create</button>   
+                                <button class="btn btn-primary btn-sm btn-block" type="submit">Create</button>
                             </div>
                             <div class="col-md-2">
                                 <label for="">  </label>
-                                <button class="btn btn-primary btn-sm btn-block" type="submit">Edit</button>   
+                                <button class="btn btn-primary btn-sm btn-block" type="submit">Edit</button>
                             </div>
                             <div class="col-md-2">
                                 <label for="">  </label>
-                                <button class="btn btn-primary btn-sm btn-block" type="submit">Delete</button>   
+                                <button class="btn btn-primary btn-sm btn-block" type="submit">Delete</button>
                             </div>
                         </div>
                 </form>
-                <form method="post">
+                <form method="GET">
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -95,7 +95,7 @@
                                     </td>
                                     <td>{{name.name}}</td>
                                     <td>{{name.manager}}</td>
-                                    <td>{{name.openEveryday}}</td>
+                                    <td>{{name.OpenEveryDay}}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -104,7 +104,7 @@
                         <div class="col-md-3 offset-md-4">
                             <label for="">  </label>
                             <p></p>
-                            <button class="btn btn-primary btn-sm btn-block" type="submit">Back</button>   
+                            <button class="btn btn-primary btn-sm btn-block" type="submit">Back</button>
                         </div>
                     </div>
                 </form>
