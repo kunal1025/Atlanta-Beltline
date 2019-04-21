@@ -60,25 +60,35 @@ def history():
     if request.method == 'GET':
         with conn.cursor() as cursor:
             getSites = siteSQL = 'SELECT name FROM site'
+            transitsSQL ='SELECT TransitDate as date, TransitType as type, TransitRoute as route, Price as price FROM beltline.take JOIN beltline.transit ' \
+                            'USING(TransitType, TransitRoute) JOIN connect using (TransitType, TransitRoute) '\
+                            'WHERE take.Username like "mary.smith" Group BY date, type, route'
+
             cursor.execute(getSites)
             sites = cursor.fetchall()
-            return render_template('/transit/transit_history.html', sites=sites)
+            cursor.execute(transitsSQL)
+            transits = cursor.fetchall()
+            print(transits)
+            return render_template('/transit/transit_history.html', sites=sites, history = transits)
     else:
         with conn.cursor() as cursor:
             transitType = request.form.get('type')
             route = request.form.get('route')
-            site = request.form.getlist('site')
+            site = request.form.get('site')
             start_date = request.form.get('startDate')
             end_date = request.form.get('endDate')
 
             gethistory = 'SELECT TransitDate as date, TransitType as type, TransitRoute as route, Price as price FROM beltline.take JOIN beltline.transit '\
             'USING(TransitType, TransitRoute) JOIN connect using (TransitType, TransitRoute) '\
-            'WHERE (TransitDate BETWEEN %s AND %s) AND %s in '\
-            '(Select SiteName from connect WHERE TransitRoute = %s AND TransitType = %s)'
-
-            cursor.execute(gethistory, (start_date, end_date, site, route, transitType))
+            'WHERE (%s in (Select SiteName from connect WHERE TransitRoute like %s AND TransitType like %s)) AND take.Username = "mary.smith"' \
+            'AND TransitType like %s ' \
+            'Group by date, type, route'
+            #'WHERE (TransitDate BETWEEN CAST(%s AS DATE) AND CAST(%s AS DATE)) AND '\
+            #cursor.execute(gethistory, (ifnull(start_date, '01-01-01'), ifnull(end_date, '01-01-20'), ifnull(site,'Null'), ifnull(route,"%"), ifnull(transitType,"%")))
+            cursor.execute(gethistory, (ifnull(site,'Null'), ifnull(route,"%"), ifnull(transitType,"%"), ifnull(transitType,"%")))
             history = cursor.fetchall()
-
+            print(site)
+            print(transitType)
             getSites = siteSQL = 'SELECT name from site'
             cursor.execute(getSites)
             sites = cursor.fetchall()
@@ -107,11 +117,21 @@ def create():
         price = request.form.get('price')
         sites = request.form.getlist('sites')
 
-        # print(transportType)
-        # print(route)
-        # print(price)
-        # print(sites)
-        #
+        print(transportType)
+        print(route)
+        print(price)
+        print(sites)
+        with conn.cursor() as cursor:
+                insertTransit = 'Insert into transit Values (%s, %s, %s)'
+                print(insertTransit)
+                cursor.execute(insertTransit,(transportType, route, price))
+                conn.commit()
+                for site in sites:
+                    insertConnect = 'Insert into connect    Values (%s, %s, %s)'
+                    cursor.execute(insertConnect,(transportType, route, site))
+                    conn.commit()
+                sites = cursor.fetchall()
+                # print(sites)
         return redirect('/transit/create')
 
 @bp.route('/edit/<transitType>/<route>', methods=('GET', 'POST'))
@@ -144,11 +164,22 @@ def edit(transitType, route):
             return redirect('/')
             # return render_template('/error/500.html')
     else:
-        transportType = request.form.get('type')
+        transitType = request.form.get('type')
         route = request.form.get('route')
         price = request.form.get('price')
         sites = request.form.getlist('sites')
+        with conn.cursor() as cursor:
+                alterPrice = 'Update transit set Price = %s WHERE transit.TransitType like %s AND transit.TransitRoute like %s'
+                cursor.execute(alterPrice,(price, transitType, route))
+                conn.commit()
 
+                removeConnect = 'Delete from connect  WHERE TransitType = %s AND TransitRoute = %s'
+                cursor.execute(removeConnect,(transitType, route))
+                conn.commit()
+                for site in sites:
+                    insertConnect = 'Insert into connect Values (%s, %s, %s)'
+                    cursor.execute(insertConnect,(transitType, route, site))
+                    conn.commit()
         return redirect('/transit/edit/' + transitType + '/' + route)
 
 @bp.route('/manage', methods=('GET', 'POST'))
@@ -167,13 +198,22 @@ def manage():
                 cursor.execute(getSites)
                 sites = cursor.fetchall()
 
-                getTableInfo = 'SELECT TransitType as transportType, TransitRoute as route, Count(Distinct(SiteName)) as numConnectedSites, ' \
-                               'count(Distinct(username)) as numTransitLogged, Price as price from connect join transit using(TransitType, TransitRoute)' \
-                               'join take using(TransitType, TransitRoute) WHERE TransitType = %s AND TransitRoute = %s' \
-                               'AND  SiteName = %s AND Price between %s AND %s' \
-                               'group by concat(TransitType, TransitRoute)'
-                cursor.execute(getTableInfo, (transportType, route, containSite, priceLow, priceHigh))
+                getTableInfo = '(SELECT TransitType as transportType, TransitRoute as route, Count(Distinct(SiteName)) as numConnectedSites, ' \
+                               'count(Distinct(username)) as numTransitLogged, Price as price from connect join transit using(TransitType, TransitRoute) ' \
+                               'join take using(TransitType, TransitRoute) WHERE TransitType like %s AND TransitRoute like %s ' \
+                               'AND  SiteName like %s AND Price between %s AND %s ' \
+                               'group by TransitType, TransitRoute) ' \
+                               'UNION ' \
+                               '(SELECT TransitType, TransitRoute, Count(Distinct(SiteName)) AS "# Connected Sites","0" as numConnectedSites, Price from connect '\
+                                'join transit using(TransitType, TransitRoute) '\
+                                'WHERE NOT concat(TransitType, TransitRoute) in (Select concat(TransitType, TransitRoute) from take) '\
+                                'AND TransitType like %s AND TransitRoute like %s AND  SiteName like %s AND Price between %s AND %s ' \
+                                'group by concat(TransitType, TransitRoute))'
+
+                cursor.execute(getTableInfo, (ifnull(transportType,"%"), ifnull(route, "%"), ifnull(containSite, "%"), ifnull(priceLow, 0), ifnull(priceHigh, 100000), ifnull(transportType,"%"), ifnull(route, "%"), ifnull(containSite, "%"), ifnull(priceLow, 0), ifnull(priceHigh, 100000)))
                 info = cursor.fetchall()
+                print(transportType)
+                print('help')
 
                 return render_template('transit/manage_transit.html', sites=sites, routes=info)
         except Exception as e:
@@ -184,13 +224,24 @@ def manage():
                 getSites = 'select name as siteName from site'
                 cursor.execute(getSites)
                 sites = cursor.fetchall()
+                getTableInfo = '(SELECT TransitType as transportType, TransitRoute as route, Count(Distinct(SiteName)) as numConnectedSites, ' \
+                               'count(Distinct(username)) as numTransitLogged, Price as price from connect join transit using(TransitType, TransitRoute) ' \
+                               'join take using(TransitType, TransitRoute) ' \
+                               'group by TransitType, TransitRoute) ' \
+                               'UNION ' \
+                               '(SELECT TransitType, TransitRoute, Count(Distinct(SiteName)) AS "# Connected Sites","0" as numConnectedSites, Price from connect '\
+                                'join transit using(TransitType, TransitRoute) '\
+                                'WHERE NOT concat(TransitType, TransitRoute) in (Select concat(TransitType, TransitRoute) from take) '\
+                                'group by concat(TransitType, TransitRoute))'
 
+                cursor.execute(getTableInfo)
+                info = cursor.fetchall()
                 # getTableInfo = 'SELECT TransitType as transportType, TransitRoute as route, Count(Distinct(SiteName)) as numConnectedSites, ' \
                 #                'count(Distinct(username)) as numTransitLogged, Price as price from connect join transit using(TransitType, TransitRoute)' \
                 #                'join take using(TransitType, TransitRoute) group by concat(TransitType, TransitRoute)'
                 # cursor.execute(getTableInfo)
                 # info = cursor.fetchall()
 
-                return render_template('transit/manage_transit.html', sites=sites, routes={})
+                return render_template('transit/manage_transit.html', sites=sites, routes=info)
         except Exception as e:
             print(e)

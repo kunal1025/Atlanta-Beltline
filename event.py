@@ -37,13 +37,13 @@ def create():
                 startDate = request.form.get('startDate')
                 endDate = request.form.get('endDate')
 
-                getAvailableStaff = 'SELECT staff.username, CONCAT(user.FirstName, ' ', user.LastName) FROM staff NATURAL JOIN ' \
-                                     'user WHERE staff.username NOT IN (SELECT username FROM beltline.staff_busy' \
-                                     'WHERE (StartDate between CAST(%s AS DATE) AND CAST(%s AS DATE)) ' \
-                                     'OR (EndDate between CAST(%s AS DATE) AND CAST(%s AS DATE)))'
-                cursor.execute(getAvailableStaff, ('01-01-1999', '01-01-2018', '01-01-1999', '01-01-2018'))
+                getAvailableStaff = 'SELECT staff.username, CONCAT(user.FirstName, user.LastName) as name FROM staff NATURAL JOIN user '
+                                     #'WHERE staff.username NOT IN (SELECT username FROM beltline.staff_busy'
+                                     #'WHERE (StartDate between CAST(%s AS DATE) AND CAST(%s AS DATE)) ' \
+                                     #'OR (EndDate between CAST(%s AS DATE) AND CAST(%s AS DATE)))'
+                cursor.execute(getAvailableStaff)
                 availableStaff = cursor.fetchall()
-
+                print(availableStaff)
                 return render_template('/event/create_event.html', staffData=availableStaff)
         except Exception as e:
             print(e)
