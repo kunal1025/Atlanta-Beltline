@@ -71,7 +71,7 @@ def create():
             cursor.execute(edit_site, (newname, newaddress, newzip, newopen, newmanager))
             conn.commit()
 
-    return redirect('/')
+        return redirect('/create')
     
 @bp.route('/detail/<Name>', methods=['GET'])
 def detail(Name):
@@ -104,6 +104,7 @@ def history():
             getSites = siteSQL = 'SELECT name FROM site'
             cursor.execute(getSites)
             sites = cursor.fetchall()
+            print(sites)
             return render_template('/transit/transit_history.html', sites=sites)
 
     else:
@@ -113,24 +114,34 @@ def history():
             enddate = request.form.get("enddate")
             eventname = request.form.get("event")
 
-            visit_history = "(SELECT VisitEventDate AS date, VisitEventName AS event, Event.SiteName AS site, Price from visit_event join event ON event.Name = visit_event.VisitEventName AND event.SiteName = visit_event.SiteName AND event.StartDate = visit_event.StartDate WHERE username = %s AND event.StartDate >= %s AND event.EndDate <= %s AND event.Name = %s) UNION (SELECT Date, '' AS VisitEventName, Name AS SiteName, '0' AS Price from site join visit_site on visit_site.SiteName = site.Name WHERE username = %s)"
+            getSites = siteSQL = 'SELECT name FROM site'
+            cursor.execute(getSites)
+            sites = cursor.fetchall()
 
-            cursor.execute(visit_history, (username, ifnull(startdate, "%"), ifnull(enddate, "%"), ifnull(eventname, "%"), username))
+            visit_history = "(SELECT VisitEventDate AS date, VisitEventName AS event, Event.SiteName AS siteName, " \
+            "Price AS price from visit_event join event ON event.Name = visit_event.VisitEventName AND event.SiteName = visit_event.SiteName " \
+            "AND event.StartDate = visit_event.StartDate WHERE username = %s AND event.StartDate between %s AND '2100-02-09' AND " \
+            "event.EndDate between '2001-02-09' AND %s AND event.Name like %s) UNION (SELECT Date, '' AS VisitEventName, Name AS " \
+            "SiteName, '0' AS Price from site join visit_site on visit_site.SiteName = site.Name WHERE username = %s)"
+
+            cursor.execute(visit_history, (username, ifnull(startdate, "2000-02-01"), ifnull(enddate, "2200-01-01"), ifnull(eventname, ""), username))
             visit_history = cursor.fetchall()
-
-        return render_template('visit_history.html', data=visit_history, sites=sites)
+            print(visit_history)
+            return render_template('visit_history.html', history=visit_history, sites=sites)
 
 # 32
-@bp.route('/staffeventdetail', methods=['GET'])
-def event_detail():
+@bp.route('/staffeventdetail/<SiteName>/<Name>/<StartDate>', methods=('GET',))
+def event_detail(SiteName, Name, StartDate):
     conn = db.get_connection()
-    if request.method == 'GET':
-        with conn.cursor() as cursor:
-            query = "Select FirstName, LastName, concat(FirstName, LastName) AS staffName,Name AS eventName, SiteName AS siteName, StartDate as startDate, EndDate AS endDate, capacity, datediff(EndDate, StartDate) as durationDays, price, description as 'desc' FROM assign_to JOIN user using (Username) JOIN event using (SiteName, Name, StartDate)"
-            cursor.execute(query)
-            data = cursor.fetchall()
-
-            return render_template('details/staff_event_detail.html',event=data)
+    with conn.cursor() as cursor:
+        query = "Select FirstName, LastName, concat(FirstName, LastName) AS staffName,Name AS eventName, " \
+        "SiteName AS siteName, StartDate as startDate, EndDate AS endDate, capacity, datediff(EndDate, StartDate) " \
+        "as durationDays, price, description as 'desc' FROM assign_to JOIN user using (Username) JOIN event using" \
+        "(SiteName, Name, StartDate) WHERE assign_to.SiteName = %s AND assign_to.StartDate = %s AND assign_to.Name = %s"
+        
+        cursor.execute(query, (SiteName, StartDate, Name))
+        data = cursor.fetchall()
+        return render_template('details/staff_event_detail.html',event=data)
  
 #30
 @bp.route('/dailydetail', methods=['GET'])
@@ -145,7 +156,7 @@ def daily_detail():
             query = "SELECT VisitEventName, count(Username) AS Visit, price, price*count(Username) AS "\
             "Revenue FROM event JOIN visit_event ON event.Name = visit_event.VisitEventName AND "\
             "event.SiteName = visit_event.SiteName AND event.StartDate = visit_event.StartDate WHERE "\
-            "event.StartDate >= %s AND event.EndDate <= %s "\
+            "event.StartDate between %s AND '2100-02-09' AND event.EndDate between '2001-02-09' AND %s "\
             "GROUP BY Event.SiteName, VisitEventDate, event.StartDate"
  
 
@@ -155,8 +166,8 @@ def daily_detail():
             return render_template('details/daily_detail.html',data=data)
 
 #36
-@bp.route('/transitdetail', methods=['GET'])
-def transit_detail():
+@bp.route('/transitdetail/<SiteName>/<TransitType>', methods=['GET'])
+def transit_detail(SiteName, TransitType):
     conn = db.get_connection()
     if request.method == 'GET':
         return render_template('transit/transit_detail.html')
