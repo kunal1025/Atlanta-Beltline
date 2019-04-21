@@ -66,7 +66,7 @@
                             <select class="form-control" name="manager" id="manager">
                                 <option value="">All</option>
                                 {% for manager in managers %}
-                                    <option name="manager" value="{{manager.Username}}">{{manager.FirstName} {manager.LastName}}</option>
+                                    <option name="manager" value="{{manager.Username}}">{{{manager.FirstName}} {{manager.LastName}}}</option>
                                 {% endfor %}
                             </select>
                         </div>

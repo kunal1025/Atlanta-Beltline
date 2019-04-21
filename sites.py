@@ -52,17 +52,17 @@ def create(SiteName):
             cursor.execute(siteinfo, (SiteName,))
             info = cursor.fetchone()
 
-            manager_drop_down = "SELECT concat(FirstName," ",LastName) from manager join user using(Username)"\
+            manager_drop_down = "SELECT concat(FirstName,' ',LastName) from manager join user using(Username)"\
             "where username not in (Select username from beltline.site join manager on manager.Username = site.Manager)"
             cursor.execute(manager_drop_down)
 
             return render_template('site/edit_site.html', data=info)
     else:
-        name = request.form.get('name')
-        zip_code = request.form.get("zipcode")
-        address = request.form.get('address')
-        manager = request.form.get('manager')
-        openEveryday = request.form.get('openeveryday')
+        newname = request.form.get('name')
+        newzip = request.form.get("zipcode")
+        newaddress = request.form.get('address')
+        newmanager = request.form.get('manager')
+        newopen = request.form.get('openeveryday')
         with conn.cursor as cursor:
             edit_site = "INSERT into beltline.site values(%s, %s, %s, %s, %s)"
             cursor.execute(edit_site, (newname, newaddress, newzip, newopen, newmanager))
@@ -92,7 +92,7 @@ def detail(Name):
 
 
 
-@bp.route('/history', methods=('GET',))
+@bp.route('/history', methods=('GET','POST'))
 def history():
     conn = db.get_connection()
     if request.method == 'GET':
@@ -107,18 +107,29 @@ def history():
             cursor.execute(visit_history, (username, ifnull(startdate, "%"), ifnull(enddate, "%"), ifnull(eventname, "%"), username))
             visit_history = cursor.fetchall()
 
-            sites = "SELECT site.Name AS site from beltline.site"
-            cursor.execute(sites)
-            dict_sites = cursor.fetchall()
-            a_list = []
-            for i in dict_sites:
-                for k,v in i.items():
-                    a_list.append(v)
-            sites = a_list
+            sites_query = "SELECT site.Name AS site from beltline.site"
+            cursor.execute(sites_query)
+            sites = cursor.fetchall()
+
+        return render_template('visit_history.html', data=visit_history, sites=sites)
 
 
 
-        return render_template('visit_history.html', data=visit_history, site=sites)
+@bp.route('/sitedetail', methods=('GET', 'POST'))
+def visitor_site_detail():
+    conn = db.get_connection()
+    username = session["username"]
+    if request.method == 'GET':
+        with conn.cursor() as cursor:
+            query = "SELECT Name as site, OpenEveryDay as OpenEveryday, concat(Address, ' ', Zipcode) AS address FROM beltline.site where Manager = %s"
+            cursor.execute(query, (username))
+            data = cursor.fetchall()
 
-
-
+            return render_template('site/site_detail.html', data=data)
+    else:
+        with conn.cursor() as cursor:
+            site = request.form.get("site")
+            date = request.form.get("date")
+            query = "INSERT into visit_site (%s, %s, %s)"
+            cursor.execute(query, (username, site, date))
+            conn.commit()
