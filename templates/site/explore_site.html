@@ -16,7 +16,7 @@
                 <h2>Explore Site</h2>
             </div>
             <div class="col-md-8 offset-md-2">
-                <form method="get">
+                <form method="POST">
                     <div class="row">
                         <div class="col-md-4">
                             <label for="site">Name</label>
@@ -113,26 +113,26 @@
                         </div>
                     </div>
                 </form>
-                <form method="post">
+                <form method="GET">
                     <table class="table table-striped">
                         <thead>
                             <tr>
                             <th scope="col"></th>
                             <th scope="col">Site Name</th>
                             <th scope="col">Event Count</th>
-                            <th scope="col">Ticket Visits</th>
+                            <th scope="col">Total Visits</th>
                             <th scope="col">My Visits</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for site in site %}
+                            {% for site in siteDB %}
                                 <tr>
                                     <td>
                                         <input class="form-check-input" type="radio" name="site" id="siteName" value="{{site.siteName}}" required>
                                     </td>
                                     <td>{{site.SiteName}}</td>
-                                    <td>{{site.EventCount}}</td>
-                                    <td>{{site.TicketVisists}}</td>
+                                    <td>{{site.eventcount}}</td>
+                                    <td>{{site.TotalVisits}}</td>
                                     <td>{{site.MyVisits}}</td>
                                 </tr>
                             {% endfor %}
