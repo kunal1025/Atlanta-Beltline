@@ -205,11 +205,6 @@ def site_report():
             print(e)
             return 'bad2'
     
-
-
-
-
-
 #38
 @bp.route('/history', methods=('GET','POST'))
 def history():
@@ -303,3 +298,59 @@ def transit_detail(SiteName, TransitType):
             return render_template('transit/transit_detail.html', transit=data)
  
  #35
+
+@bp.route('/explore_site', methods=('GET', 'POST'))
+def explore_site():
+    conn = db.get_connection()
+    if request.method == 'POST':
+        try:
+            with conn.cursor() as cursor:
+                getAllSites = 'SELECT name from site'
+                cursor.execute(getAllSites)
+                sites = cursor.fetchall()
+
+                startDate = request.form.get('startdate')
+                endDate = request.form.get('enddate')
+                eventMin = request.form.get('eventMin')
+                eventMax = request.form.get('eventMax')
+                visitMin = request.form.get('visitMin')
+                visitMax = request.form.get('visitMax')
+
+                containSite = request.form.get('site')
+
+
+                getData = 'SELECT name, manager, OpenEveryDay from beltline.site '
+
+                cursor.execute(getData)
+                info = cursor.fetchall()
+
+                print(info)
+                return render_template('site/manage_site.html', sites = sites, managers = managers, names = info)
+        except Exception as e:
+            print(e)
+            return 'bad1'
+    else:
+        try:
+            with conn.cursor() as cursor:
+                getAllSites = 'SELECT name from site'
+                cursor.execute(getAllSites)
+                sites = cursor.fetchall()
+                print(sites)
+
+                getAllManagers = '(SELECT username as name from manager join user using(Username) '\
+                                    'where username in '\
+                                    '(Select username from beltline.site join manager on manager.Username = site.Manager))'
+                cursor.execute(getAllManagers)
+                managers = cursor.fetchall()
+                print(managers)
+
+                getData = 'SELECT name, manager, OpenEveryDay from beltline.site '
+
+                cursor.execute(getData)
+                info = cursor.fetchall()
+
+                print('GET')
+                return render_template('site/manage_site.html', sites = sites, managers = managers, names = info)
+        except Exception as e:
+            print(e)
+            return 'bad2'

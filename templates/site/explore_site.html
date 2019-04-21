@@ -40,13 +40,13 @@
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="date">Start Date</label>
-                            <input type="date" class="form-control" name="date" id="date" placeholder="" value="" required>
+                            <label for="startdate">Start Date</label>
+                            <input type="date" class="form-control" name="startdate" id="startdate" placeholder="" value="" required>
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label for="date">End Date</label>
-                            <input type="date" class="form-control" name="date" id="date" placeholder="" value="" required>
+                            <label for="enddate">End Date</label>
+                            <input type="date" class="form-control" name="enddate" id="enddate" placeholder="" value="" required>
                         </div>
                     </div>
 
@@ -99,17 +99,17 @@
                     <div class="row">
                         <div class="col-md-3">
                             <label for="">  </label>
-                            <button class="btn btn-primary btn-sm btn-block" type="submit">Filter</button>   
+                            <button class="btn btn-primary btn-sm btn-block" type="submit">Filter</button>
                         </div>
-                        
+
                         <div class="col-md-3 offset-md-3">
                             <label for="">  </label>
-                            <button class="btn btn-primary btn-sm btn-block" type="submit">Site Detail</button>   
+                            <button class="btn btn-primary btn-sm btn-block" type="submit">Site Detail</button>
                         </div>
 
                         <div class="col-md-3">
                             <label for="">  </label>
-                            <button class="btn btn-primary btn-sm btn-block" type="submit">Transit Detail</button>   
+                            <button class="btn btn-primary btn-sm btn-block" type="submit">Transit Detail</button>
                         </div>
                     </div>
                 </form>
@@ -130,10 +130,10 @@
                                     <td>
                                         <input class="form-check-input" type="radio" name="site" id="siteName" value="{{site.siteName}}" required>
                                     </td>
-                                    <td>{{site.Site Name}}</td>
-                                    <td>{{site.Event Count}}</td>
-                                    <td>{{site.Ticket Visists}}</td>
-                                    <td>{{site.My Visits}}</td>
+                                    <td>{{site.SiteName}}</td>
+                                    <td>{{site.EventCount}}</td>
+                                    <td>{{site.TicketVisists}}</td>
+                                    <td>{{site.MyVisits}}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -142,7 +142,7 @@
                         <div class="col-md-3 offset-md-4">
                             <label for="">  </label>
                             <p></p>
-                            <button class="btn btn-primary btn-sm btn-block" type="submit">Back</button>   
+                            <button class="btn btn-primary btn-sm btn-block" type="submit">Back</button>
                         </div>
                     </div>
                 </form>
