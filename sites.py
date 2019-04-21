@@ -12,6 +12,65 @@ def ifnull(var,value):
 
 bp = Blueprint('sites', __name__, url_prefix='/site')
 
+@bp.route('/manage_site', methods=('GET', 'POST'))
+def manage_site():
+    conn = db.get_connection()
+    if request.method == 'POST':
+        try:
+            with conn.cursor() as cursor:
+                getAllSites = 'SELECT name from site'
+                cursor.execute(getAllSites)
+                sites = cursor.fetchall()
+
+                getAllManagers = '(SELECT username as name from manager join user using(Username) '\
+                                    'where username in '\
+                                    '(Select username from beltline.site join manager on manager.Username = site.Manager))'
+                cursor.execute(getAllManagers)
+                managers = cursor.fetchall()
+
+                containSite = request.form.get('site')
+                selectedManager = request.form.get('manager')
+                print(selectedManager)
+                openeveryDay = request.form.get('type')
+                print(openeveryDay)
+
+                getData = 'SELECT name, manager, OpenEveryDay from beltline.site ' \
+                            'WHERE name like %s AND manager like %s AND OpenEveryDay like %s'
+
+                cursor.execute(getData,(ifnull(containSite,"%"), ifnull(selectedManager, "%"), ifnull(openeveryDay, "%")))
+                info = cursor.fetchall()
+
+                print(info)
+                return render_template('site/manage_site.html', sites = sites, managers = managers, names = info)
+        except Exception as e:
+            print(e)
+            return 'bad1'
+    else:
+        try:
+            with conn.cursor() as cursor:
+                getAllSites = 'SELECT name from site'
+                cursor.execute(getAllSites)
+                sites = cursor.fetchall()
+                print(sites)
+
+                getAllManagers = '(SELECT username as name from manager join user using(Username) '\
+                                    'where username in '\
+                                    '(Select username from beltline.site join manager on manager.Username = site.Manager))'
+                cursor.execute(getAllManagers)
+                managers = cursor.fetchall()
+                print(managers)
+
+                getData = 'SELECT name, manager, OpenEveryDay from beltline.site '
+
+                cursor.execute(getData)
+                info = cursor.fetchall()
+
+                print('GET')
+                return render_template('site/manage_site.html', sites = sites, managers = managers, names = info)
+        except Exception as e:
+            print(e)
+            return 'bad2'
+
 @bp.route('/site_report', methods=('GET', 'POST'))
 def site_report():
     conn = db.get_connection()
