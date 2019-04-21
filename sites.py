@@ -16,22 +16,22 @@ def edit(SiteName):
     conn = db.get_connection()
     if request.method == 'GET':
         with conn.cursor() as cursor:
-            siteinfo = "select FirstName, LastName, Address, Zipcode, Manager, OpenEveryDay from site JOIN user on site.Manager = user.Username where Name = %s"
+            siteinfo = "select Address, Zipcode, Manager, OpenEveryDay from site JOIN user on site.Manager = user.Username where Name = %s"
             cursor.execute(siteinfo, (SiteName,))
 
-            manager_drop_down = "SELECT concat(FirstName,' ',LastName) from manager join user using(Username) "\
+            manager_drop_down = "SELECT FirstName, LastName, concat(FirstName,' ',LastName) as Name from manager join user using(Username) "\
             "where username not in (Select username from beltline.site join manager on manager.Username = site.Manager)"
             current_manager = "SELECT concat(FirstName,' ',LastName) from manager join user using(Username) join site on manager.Username = site.Manager WHERE name = %s"
             
             cursor.execute(manager_drop_down)
-            info = cursor.fetchall()
+            manager_info = cursor.fetchall()
             
             cursor.execute(current_manager, (SiteName,))
             drop_down = cursor.fetchone()
             drop_down["is_selected"] = 1
             
-            info.append(drop_down)
-            return render_template('site/edit_site.html', data=siteinfo, manager=info)
+            manager_info.append(drop_down)
+            return render_template('site/edit_site.html', data=siteinfo, managers=manager_info)
     else:
         name = request.form.get('name')
         zip_code = request.form.get("zipcode")
@@ -51,12 +51,12 @@ def create():
     conn = db.get_connection()
     if request.method == 'GET':
         with conn.cursor() as cursor:
-
-            manager = "SELECT concat(FirstName,' ',LastName) from manager join user using(Username)"\
+            manager_query = "SELECT FirstName, LastName, concat(FirstName,' ',LastName) as Name, username from manager join user using(Username)"\
             "where username not in (Select username from beltline.site join manager on manager.Username = site.Manager)"
-            cursor.execute(manager)
+            cursor.execute(manager_query)
+            managers = cursor.fetchall() 
 
-            return render_template('site/create_site.html', manager=manager)
+            return render_template('site/create_site.html', managers=managers)
     else:
         newname = request.form.get('name')
         newzip = request.form.get("zipcode")
@@ -64,6 +64,9 @@ def create():
         newmanager = request.form.get('manager')
         newopen = request.form.get('openeveryday')
         with conn.cursor as cursor:
+            manager_username = "SELECT username from Manager join user using(Username) where SELECT username from Manager join user using(Username) where(concat(FirstName, ' ', LastName) = %s"
+            cursor.execute(manager_username, (newmanager,))
+
             edit_site = "INSERT into beltline.site values(%s, %s, %s, %s, %s)"
             cursor.execute(edit_site, (newname, newaddress, newzip, newopen, newmanager))
             conn.commit()
@@ -98,6 +101,13 @@ def history():
     conn = db.get_connection()
     if request.method == 'GET':
         with conn.cursor() as cursor:
+            getSites = siteSQL = 'SELECT name FROM site'
+            cursor.execute(getSites)
+            sites = cursor.fetchall()
+            return render_template('/transit/transit_history.html', sites=sites)
+
+    else:
+        with conn.cursor() as cursor:
             username = session["username"]
             startdate = request.form.get("startdate")
             enddate = request.form.get("enddate")
@@ -107,10 +117,6 @@ def history():
 
             cursor.execute(visit_history, (username, ifnull(startdate, "%"), ifnull(enddate, "%"), ifnull(eventname, "%"), username))
             visit_history = cursor.fetchall()
-
-            sites_query = "SELECT site.Name AS site from beltline.site"
-            cursor.execute(sites_query)
-            sites = cursor.fetchall()
 
         return render_template('visit_history.html', data=visit_history, sites=sites)
 
@@ -153,18 +159,21 @@ def daily_detail():
 def transit_detail():
     conn = db.get_connection()
     if request.method == 'GET':
-        with conn.cursor() as cursor:
+        return render_template('transit/transit_detail.html')
 
-            #sitename = 
-            #transporttype =
+    else:
+
+            sitename = "Inman Park"
+            transittype = "Bus"
 
             query = "SELECT TransitType, TransitRoute, Price, count(*) FROM beltline.transit JOIN "\
             "beltline.connect using(TransitType, TransitRoute) "\
             "WHERE SiteName = %s AND TransitType = %s "\
-            "GROUP BY concat(transitType, TransitRoute);
+            "GROUP BY TransitType, TransitRoute"
 
-            cursor.execute(query (sitename, transporttype))
+            cursor.execute(query (sitename, transittype))
             data = cursor.fetchall()
 
-            return render_template('transit/transit_detail.html',data=data)
+            return render_template('transit/transit_detail.html', transit=data)
  
+ #35

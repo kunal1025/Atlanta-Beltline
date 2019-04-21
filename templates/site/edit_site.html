@@ -35,14 +35,14 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="firstName">Name</label>
-                            <input type="text" class="form-control" name="firstName" id="firstName" placeholder="" value="{{data.FirstName}}" required>
+                            <input type="text" class="form-control" name="firstName" id="firstName" placeholder="" value="" required>
                             <div class="invalid-feedback">
                                 Valid first name is required.
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
                                 <label for="lastName">Zipcode</label>
-                                <input type="text" class="form-control" id="lastName" placeholder="12345" value="{{data.LastName}}" min= ""required>
+                                <input type="text" class="form-control" id="lastName" placeholder="12345" value="" min= ""required>
                                 <div class="invalid-feedback">
                                     Valid last name is required.
                                 </div>
@@ -66,7 +66,7 @@
                             <select class="form-control" name="manager" id="manager">
                                 <option value="">All</option>
                                 {% for manager in managers %}
-                                    <option name="manager" value="{{manager.Username}}">{{manager.FirstName}} {{manager.LastName}}</option>
+                                    <option name="manager" value="{{manager.Name}}">{{manager.Name}}</option>
                                 {% endfor %}
                             </select>
                         </div>
