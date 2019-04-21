@@ -92,7 +92,7 @@ def detail(Name):
 
 
 
-
+#38
 @bp.route('/history', methods=('GET','POST'))
 def history():
     conn = db.get_connection()
@@ -114,8 +114,8 @@ def history():
 
         return render_template('visit_history.html', data=visit_history, sites=sites)
 
-
-@bp.route('/eventdetail', methods=['GET'])
+# 32
+@bp.route('/staffeventdetail', methods=['GET'])
 def event_detail():
     conn = db.get_connection()
     if request.method == 'GET':
@@ -126,7 +126,7 @@ def event_detail():
 
             return render_template('details/staff_event_detail.html',event=data)
  
-
+#30
 @bp.route('/dailydetail', methods=['GET'])
 def daily_detail():
     conn = db.get_connection()
@@ -147,3 +147,24 @@ def daily_detail():
             data = cursor.fetchall()
 
             return render_template('details/daily_detail.html',data=data)
+
+#36
+@bp.route('/transitdetail', methods=['GET'])
+def transit_detail():
+    conn = db.get_connection()
+    if request.method == 'GET':
+        with conn.cursor() as cursor:
+
+            #sitename = 
+            #transporttype =
+
+            query = "SELECT TransitType, TransitRoute, Price, count(*) FROM beltline.transit JOIN "\
+            "beltline.connect using(TransitType, TransitRoute) "\
+            "WHERE SiteName = %s AND TransitType = %s "\
+            "GROUP BY concat(transitType, TransitRoute);
+
+            cursor.execute(query (sitename, transporttype))
+            data = cursor.fetchall()
+
+            return render_template('transit/transit_detail.html',data=data)
+ 
