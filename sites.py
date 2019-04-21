@@ -78,7 +78,7 @@ def detail(Name):
     conn = db.get_connection()
     if request.method == 'GET':
         with conn.cursor() as cursor:
-            getALLSITES = "SELECT Name as site, OpenEveryDay as openEveryday, concat(Address, ', Zipcode) as address FROM beltline.site"
+            getALLSITES = "SELECT Name as site, OpenEveryDay as openEveryday, concat(Address,' ', Zipcode) as address FROM beltline.site"
             cursor.execute(getALLSITES)
             sites = cursor.fetchone()
         return redirect('sites/site_detail.html', data=sites)
@@ -150,20 +150,24 @@ def daily_detail():
     if request.method == 'GET':
         with conn.cursor() as cursor:
 
-            startdate = "2019-02-04"
-            enddate = "2019-02-11"
+            visitdate = "2019-02-04"
+            sitename = session
+            
 
-            query = "SELECT VisitEventName, count(Username) AS Visit, price, price*count(Username) AS "\
-            "Revenue FROM event JOIN visit_event ON event.Name = visit_event.VisitEventName AND "\
-            "event.SiteName = visit_event.SiteName AND event.StartDate = visit_event.StartDate WHERE "\
-            "event.StartDate between %s AND '2100-02-09' AND event.EndDate between '2001-02-09' AND %s "\
-            "GROUP BY Event.SiteName, VisitEventDate, event.StartDate"
- 
+            query = "SELECT VisitEventName AS eventName, group_concat(Distinct concat(User.FirstName, ' ', User.LastName)) as staffNames, " \ 
+            "count(visit_event.Username) AS visits, price, price*count(visit_event.Username) as " \
+            "revenue from event join visit_event on event.Name = visit_event.VisitEventName AND " \
+            "event.SiteName = visit_event.SiteName AND event.StartDate = visit_event.StartDate JOIN " \
+            "assign_to ON assign_to.Name = event.Name AND assign_to.SiteName = event.SiteName AND " \
+            "assign_to.StartDate = event.StartDate JOIN user on user.Username = assign_to.Username " \
+            "WHERE visit_event.StartDate = %s AND site_name = %s " \
+            "group by concat Event.SiteName, VisitEventDate, event.StartDate"
 
-            cursor.execute(query, (startdate, enddate))
+
+            cursor.execute(query, (visitdate, sitename))
             data = cursor.fetchall()
 
-            return render_template('details/daily_detail.html',data=data)
+            return render_template('details/daily_detail.html',dataDB=data)
 
 #36
 @bp.route('/transitdetail/<SiteName>/<TransitType>', methods=['GET'])
