@@ -144,23 +144,22 @@ def event_detail(SiteName, Name, StartDate):
         return render_template('details/staff_event_detail.html',event=data)
  
 #30
-@bp.route('/dailydetail', methods=['GET'])
+@bp.route('/dailydetail/<VisitDate>/<SiteName>', methods=['GET'])
 def daily_detail():
     conn = db.get_connection()
     if request.method == 'GET':
         with conn.cursor() as cursor:
 
             visitdate = "2019-02-04"
-            sitename = session
+            sitename = session["site"]
             
-
-            query = "SELECT VisitEventName AS eventName, group_concat(Distinct concat(User.FirstName, ' ', User.LastName)) as staffNames, " \ 
+            query = "SELECT VisitEventName AS eventName, group_concat(Distinct concat(User.FirstName, ' ', User.LastName)) as staffNames, " \
             "count(visit_event.Username) AS visits, price, price*count(visit_event.Username) as " \
             "revenue from event join visit_event on event.Name = visit_event.VisitEventName AND " \
             "event.SiteName = visit_event.SiteName AND event.StartDate = visit_event.StartDate JOIN " \
             "assign_to ON assign_to.Name = event.Name AND assign_to.SiteName = event.SiteName AND " \
             "assign_to.StartDate = event.StartDate JOIN user on user.Username = assign_to.Username " \
-            "WHERE visit_event.StartDate = %s AND site_name = %s " \
+            "WHERE visit_event.VisitDate = %s AND visit_event.SiteName = %s " \
             "group by concat Event.SiteName, VisitEventDate, event.StartDate"
 
 
