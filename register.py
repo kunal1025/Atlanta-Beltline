@@ -30,6 +30,7 @@ def register_user():
         password = request.form.get('password')
         emails = request.form.getlist('email[]')
 
+        error = None
         conn = db.get_connection()
         with conn.cursor() as cursor:
             user = 'select username from user where username = %s'
