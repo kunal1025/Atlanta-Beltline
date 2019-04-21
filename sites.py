@@ -22,13 +22,16 @@ def edit(SiteName):
             manager_drop_down = "SELECT concat(FirstName,' ',LastName) from manager join user using(Username) "\
             "where username not in (Select username from beltline.site join manager on manager.Username = site.Manager)"
             current_manager = "SELECT concat(FirstName,' ',LastName) from manager join user using(Username) join site on manager.Username = site.Manager WHERE name = %s"
+            
             cursor.execute(manager_drop_down)
             info = cursor.fetchall()
+            
             cursor.execute(current_manager, (SiteName,))
             drop_down = cursor.fetchone()
             drop_down["is_selected"] = 1
+            
             info.append(drop_down)
-            return render_template('site/edit_site.html', data=siteinfo, manager = info)
+            return render_template('site/edit_site.html', data=siteinfo, manager=info)
     else:
         name = request.form.get('name')
         zip_code = request.form.get("zipcode")
@@ -43,20 +46,17 @@ def edit(SiteName):
 
     return redirect('/edit/' + SiteName)
 
-
-def create(SiteName):
+@bp.route('/create', methods=['GET', 'POST'])
+def create():
     conn = db.get_connection()
     if request.method == 'GET':
         with conn.cursor() as cursor:
-            siteinfo = "select Name, Zipcode, Manager, OpenEveryDay from site where site = %s"
-            cursor.execute(siteinfo, (SiteName,))
-            info = cursor.fetchone()
 
-            manager_drop_down = "SELECT concat(FirstName,' ',LastName) from manager join user using(Username)"\
+            manager = "SELECT concat(FirstName,' ',LastName) from manager join user using(Username)"\
             "where username not in (Select username from beltline.site join manager on manager.Username = site.Manager)"
-            cursor.execute(manager_drop_down)
+            cursor.execute(manager)
 
-            return render_template('site/edit_site.html', data=info)
+            return render_template('site/create_site.html', manager=manager)
     else:
         newname = request.form.get('name')
         newzip = request.form.get("zipcode")
@@ -75,9 +75,10 @@ def detail(Name):
     conn = db.get_connection()
     if request.method == 'GET':
         with conn.cursor() as cursor:
-            getALLSITES = "SELECT Name as site, OpenEveryDay as openEveryday, concat(Address, " ", Zipcode) as address FROM beltline.site"
+            getALLSITES = "SELECT Name as site, OpenEveryDay as openEveryday, concat(Address, ', Zipcode) as address FROM beltline.site"
             cursor.execute(getALLSITES)
             sites = cursor.fetchone()
+        return redirect('sites/site_detail.html', data=sites)
     else:
         with conn.cursor() as cursor:
             sitedate = "INSERT into visit_site (%s, %s, %s)"
@@ -85,7 +86,7 @@ def detail(Name):
             conn.commit()
             sitedate = cursor.fetchone()
 
-    return redirect('sites/site_detail.html', data=sites)
+    
 
 
 
@@ -114,22 +115,35 @@ def history():
         return render_template('visit_history.html', data=visit_history, sites=sites)
 
 
-
-@bp.route('/sitedetail', methods=('GET', 'POST'))
-def visitor_site_detail():
+@bp.route('/eventdetail', methods=['GET'])
+def event_detail():
     conn = db.get_connection()
-    username = session["username"]
     if request.method == 'GET':
         with conn.cursor() as cursor:
-            query = "SELECT Name as site, OpenEveryDay as OpenEveryday, concat(Address, ' ', Zipcode) AS address FROM beltline.site where Manager = %s"
-            cursor.execute(query, (username))
+            query = "Select FirstName, LastName, concat(FirstName, LastName) AS staffName,Name AS eventName, SiteName AS siteName, StartDate as startDate, EndDate AS endDate, capacity, datediff(EndDate, StartDate) as durationDays, price, description as 'desc' FROM assign_to JOIN user using (Username) JOIN event using (SiteName, Name, StartDate)"
+            cursor.execute(query)
             data = cursor.fetchall()
 
-            return render_template('site/site_detail.html', data=data)
-    else:
+            return render_template('details/staff_event_detail.html',event=data)
+ 
+
+@bp.route('/dailydetail', methods=['GET'])
+def daily_detail():
+    conn = db.get_connection()
+    if request.method == 'GET':
         with conn.cursor() as cursor:
-            site = request.form.get("site")
-            date = request.form.get("date")
-            query = "INSERT into visit_site (%s, %s, %s)"
-            cursor.execute(query, (username, site, date))
-            conn.commit()
+
+            startdate = "2019-02-04"
+            enddate = "2019-02-11"
+
+            query = "SELECT VisitEventName, count(Username) AS Visit, price, price*count(Username) AS "\
+            "Revenue FROM event JOIN visit_event ON event.Name = visit_event.VisitEventName AND "\
+            "event.SiteName = visit_event.SiteName AND event.StartDate = visit_event.StartDate WHERE "\
+            "event.StartDate >= %s AND event.EndDate <= %s "\
+            "GROUP BY Event.SiteName, VisitEventDate, event.StartDate"
+ 
+
+            cursor.execute(query, (startdate, enddate))
+            data = cursor.fetchall()
+
+            return render_template('details/daily_detail.html',data=data)
