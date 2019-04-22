@@ -164,21 +164,22 @@ def edit(transitType, route):
             return redirect('/')
             # return render_template('/error/500.html')
     else:
-        transitType = request.form.get('type')
-        route = request.form.get('route')
+        route1 = request.form.get('route')
         price = request.form.get('price')
         sites = request.form.getlist('sites')
+        print(route)
+        print(route1)
         with conn.cursor() as cursor:
-                alterPrice = 'Update transit set Price = %s WHERE transit.TransitType like %s AND transit.TransitRoute like %s'
-                cursor.execute(alterPrice,(price, transitType, route))
+                alterPrice = 'Update transit set Price = %s , TransitRoute = %s WHERE transit.TransitType like %s AND transit.TransitRoute like %s'
+                cursor.execute(alterPrice,(price, route1, transitType, route))
                 conn.commit()
 
                 removeConnect = 'Delete from connect  WHERE TransitType = %s AND TransitRoute = %s'
-                cursor.execute(removeConnect,(transitType, route))
+                cursor.execute(removeConnect,(transitType, route1))
                 conn.commit()
                 for site in sites:
                     insertConnect = 'Insert into connect Values (%s, %s, %s)'
-                    cursor.execute(insertConnect,(transitType, route, site))
+                    cursor.execute(insertConnect,(transitType, route1, site))
                     conn.commit()
         return redirect('/transit/edit/' + transitType + '/' + route)
 
@@ -272,4 +273,3 @@ def transit_detail(SiteName, TransitType):
             transits = cursor.fetchall()
 
             return render_template('transit/transit_detail.html', transits=data)
- 
