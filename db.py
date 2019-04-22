@@ -11,8 +11,8 @@ def get_connection():
     try:
         if not _connection:
             _connection = pymysql.connect(host=os.getenv('HOST'),
-                                            user='root',
-                                            password='pass',
+                                            user=os.getenv('USERNAME'),
+                                            password=os.getenv('PASSWORD'),
                                             db=os.getenv('DB'),
                                             charset='utf8mb4',
                                             cursorclass=pymysql.cursors.DictCursor)
