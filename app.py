@@ -38,6 +38,7 @@ app.register_blueprint(event.bp)
 app.register_blueprint(detail.bp)
 app.register_blueprint(visit.bp)
 app.register_blueprint(schedule.bp)
+app.register_blueprint(manage.bp)
 
 
 if __name__ == '__main__':
