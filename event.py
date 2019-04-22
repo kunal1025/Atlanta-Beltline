@@ -110,3 +110,60 @@ def getDetail(name, start_date, site_name):
         visit_date = request.form.get('visitDate')
 
 #@bp.route('/staff/detail/<name>/<start_date>/<site_name>', methods=('GET',))
+
+@bp.route('/manage', methods=('GET', 'POST'))
+def manage():
+    conn = db.get_connection()
+    if request.method == 'GET':
+        with conn.cursor() as cursor:
+            getEvents = 'Select B.Name as name, A.StaffCount, A.Duration, B.TotalVisits, B.Revenue FROM '\
+                '( '\
+                'SELECT Name, count(Username) AS StaffCount, datediff(event.EndDate, event.StartDate) '\
+                'AS Duration, event.SiteName, event.StartDate FROM assign_to join event using(Name, SiteName, StartDate) group by Name, SiteName, StartDate '\
+                ') '\
+                'AS A '\
+                'JOIN '\
+                '( '\
+                'SELECT event.Name, event.StartDate, event.SiteName ,count(Username) AS "TotalVisits", count(Username)*Price AS '\
+                '"Revenue" from beltline.event JOIN visit_event on event.Name = visit_event.VisitEventName AND '\
+                'event.StartDate = visit_event.StartDate GROUP BY visit_event.VisitEventName, visit_event.StartDate, event.siteName '\
+                ') '\
+                'AS B '\
+                'ON A.Name = B.Name AND A.StartDate = B.StartDate AND A.SiteName = B.SiteName'
+            cursor.execute(getEvents)
+            events = cursor.fetchall()
+            return render_template('/event/manage_event.html', events=events)
+    else:
+        name = request.form.get('name')
+        description = request.form.get('description')
+        startDate = request.form.get('startDate')
+        endDate = request.form.get('endDate')
+        minDuration = request.form.get('minDuration')
+        maxDuration = request.form.get('maxDuration')
+        minVisit = request.form.get('minVisit')
+        maxVisit = request.form.get('maxVisit')
+        minRevenue = request.form.get('minRevenue')
+        maxRevenue = request.form.get('maxRevenue')
+
+        #siteName = session['site']
+        siteName = 'Inman Park'
+        with conn.cursor() as cursor:
+            getEvents = 'Select B.Name as name, A.StaffCount as staffCount, A.Duration, B.TotalVisits, B.Revenue FROM '\
+                '( '\
+                'SELECT Name, count(Username) AS StaffCount, datediff(event.EndDate, event.StartDate) '\
+                'AS Duration, event.SiteName, event.StartDate FROM assign_to join event using(Name, SiteName, StartDate) group by Name, SiteName, StartDate '\
+                ') '\
+                'AS A '\
+                'JOIN '\
+                '( '\
+                'SELECT event.Name, event.StartDate, event.EndDate, event.SiteName ,count(Username) AS "TotalVisits", count(Username)*Price AS '\
+                '"Revenue" from beltline.event JOIN visit_event on event.Name = visit_event.VisitEventName AND '\
+                'event.StartDate = visit_event.StartDate GROUP BY visit_event.VisitEventName, visit_event.StartDate, event.siteName '\
+                ') '\
+                'AS B '\
+                'ON A.Name = B.Name AND A.StartDate = B.StartDate AND A.SiteName = B.SiteName WHERE A.SiteName = %s AND A.StartDate between %s AND "2100-02-09" AND B.EndDate '\
+                'between "2001-02-09" AND %s AND Duration between %s AND %s '\
+                'AND TotalVisits Between %s AND %s AND Revenue between %s AND %s'
+            cursor.execute(getEvents, (siteName, startDate, endDate, minDuration, maxDuration, minVisit, maxVisit, minRevenue, maxRevenue))
+            events = cursor.fetchall()
+            return render_template('/event/manage_event.html', events=events)
