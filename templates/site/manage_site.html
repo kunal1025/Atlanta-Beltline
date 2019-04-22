@@ -69,21 +69,12 @@
                                     <button class="btn btn-primary btn-sm btn-block" type="button">Create</button>
                                 </a>
                             </div>
-                            <div class="col-md-2">
-                                <label for="">  </label>
-                                <button class="btn btn-primary btn-sm btn-block" type="button">Edit</button>
-                            </div>
-                            <div class="col-md-2">
-                                <label for="">  </label>
-                                <button class="btn btn-primary btn-sm btn-block" type="button">Delete</button>
-                            </div>
                         </div>
                 </form>
                 <form method="GET">
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                            <th scope="col"></th>
                             <th scope="col">Name</th>
                             <th scope="col">Manager</th>
                             <th scope="col">Open Everyday</th>
@@ -92,12 +83,19 @@
                         <tbody>
                             {% for name in names %}
                                 <tr>
-                                    <td>
-                                        <input class="form-check-input" type="radio" name="name" id="name" value="{{name.name}}" required>
-                                    </td>
                                     <td>{{name.name}}</td>
                                     <td>{{name.manager}}</td>
                                     <td>{{name.OpenEveryDay}}</td>
+                                    <td>
+                                        <a href="/site/edit/{{name.name}}">
+                                            <button class="btn btn-primary btn-sm btn-block" type="button">Edit</button>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="/site/delete/{{name.name}}">
+                                            <button class="btn btn-primary btn-sm btn-block" type="button">Delete</button>
+                                        </a>
+                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
