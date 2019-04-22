@@ -31,11 +31,11 @@ def edit(SiteName):
             cursor.execute(current_manager, (SiteName,))
             drop_down = cursor.fetchone()
 
-            drop_down["is_selected"] = 1
-            manager_info.append(drop_down)
+
 
             return render_template('site/edit_site.html', data=siteinfo, managers=manager_info)
     else:
+        print("pull")
         zip_code = request.form.get('zipcode')
         address = request.form.get('address')
         manager = request.form.get('manager')
@@ -46,11 +46,15 @@ def edit(SiteName):
             cursor.execute(manager_username, (manager,))
             manager_username = cursor.fetchone()
             
+            site_query = "SELECT * FROM Site WHERE Name = %s"
+            cursor.execute(site_query, (SiteName))
+            sites = cursor.fetchone()
+
             manager_username = manager_username['Name1']
             print(manager_username)
             edit_site = 'UPDATE beltline.site set `Address` = %s, ' \
             'Manager = %s, Zipcode = %s, OpenEveryDay = %s WHERE site.Name = %s'
-            cursor.execute(edit_site, (address, manager_username, zip_code, openEveryday, name))
+            cursor.execute(edit_site, (ifnull(address, sites["Address"]), ifnull(manager_username, sites["Manager"]), ifnull(zip_code, sites["Zipcode"]), ifnull(openEveryday, sites["OpenEveryDay"]), name))
             conn.commit()
 
     return redirect('/site/edit/' + SiteName)
