@@ -62,11 +62,11 @@ def history():
             getSites = siteSQL = 'SELECT name FROM site'
             transitsSQL ='SELECT TransitDate as date, TransitType as type, TransitRoute as route, Price as price FROM beltline.take JOIN beltline.transit ' \
                             'USING(TransitType, TransitRoute) JOIN connect using (TransitType, TransitRoute) '\
-                            'WHERE take.Username like "mary.smith" Group BY date, type, route'
+                            'WHERE take.Username like %s Group BY date, type, route'
 
             cursor.execute(getSites)
             sites = cursor.fetchall()
-            cursor.execute(transitsSQL)
+            cursor.execute(transitsSQL, (session['username']))
             transits = cursor.fetchall()
             print(transits)
             return render_template('/transit/transit_history.html', sites=sites, history = transits)
@@ -245,3 +245,22 @@ def manage():
                 return render_template('transit/manage_transit.html', sites=sites, routes=info)
         except Exception as e:
             print(e)
+
+#36
+@bp.route('/transitdetail/<SiteName>/<TransitType>', methods=['GET'])
+def transit_detail(SiteName, TransitType):
+    conn = db.get_connection()
+    if request.method == 'GET':
+        return render_template('transit/transit_detail.html', SiteName=SiteName)
+
+    else:
+            query = "SELECT SiteName as site, TransitType, TransitRoute, Price, count(*) FROM beltline.transit AS cs JOIN "\
+            "beltline.connect using(TransitType, TransitRoute) "\
+            "WHERE SiteName = %s AND TransitType = %s "\
+            "GROUP BY TransitType, TransitRoute"
+
+            cursor.execute(query (SiteName, TransitType))
+            transits = cursor.fetchall()
+
+            return render_template('transit/transit_detail.html', transits=data)
+ 
