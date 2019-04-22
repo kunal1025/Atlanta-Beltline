@@ -16,7 +16,7 @@
                 <h2>Manage Staff</h2>
             </div>
             <div class="col-md-8 offset-md-2">
-                <form method="get">
+                <form method="POST">
                     <div class="row">
                         <div class="col-md-4 offset-md-4">
                             <label for="site">Site</label>
@@ -50,35 +50,35 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="date">Start Date</label>
-                            <input type="date" class="form-control" name="date" id="date" placeholder="" value="" required>
+                            <input type="date" class="form-control" name="startdate" id="startdate" placeholder="" value="" >
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label for="date">End Date</label>
-                            <input type="date" class="form-control" name="date" id="date" placeholder="" value="" required>
+                            <input type="date" class="form-control" name="enddate" id="enddate" placeholder="" value="" >
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-3 offset-md-4">
                             <label for="">  </label>
-                            <button class="btn btn-primary btn-sm btn-block" type="submit">Filter</button>   
+                            <button class="btn btn-primary btn-sm btn-block" type="submit">Filter</button>
                         </div>
                     </div>
                 </form>
-                <!-- <form method="post"> -->
-                <table class="table table-striped"> 
+                 <form method="GET">
+                <table class="table table-striped">
                     <thead>
                         <tr>
                         <th scope="col">Staff Name</th>
-                        <th scope="col"># Event Shift</th>
+                        <th scope="col"> Event Shift</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for name in names %}
                             <tr>
-                                <td>{{name.firstname}}</td>
-                                <td>{{name.# Event Shift}}</td>
+                                <td>{{name.StaffName}}</td>
+                                <td>{{name.EventShift}}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -87,7 +87,7 @@
                         <div class="col-md-3 offset-md-4">
                             <label for="">  </label>
                             <p></p>
-                            <button class="btn btn-primary btn-sm btn-block" type="submit">Back</button>   
+                            <button class="btn btn-primary btn-sm btn-block" type="submit">Back</button>
                         </div>
                     </div>
                 <!-- </form> -->
