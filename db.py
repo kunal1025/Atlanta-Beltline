@@ -10,10 +10,10 @@ def get_connection():
     global _connection
     try:
         if not _connection:
-            _connection = pymysql.connect(host=os.getenv('HOST'),
-                                            user=os.getenv('USERNAME'),
-                                            password=os.getenv('PASSWORD'),
-                                            db=os.getenv('DB'),
+            _connection = pymysql.connect(host=('localhost'),
+                                            user=('root'),
+                                            password=('password123'),
+                                            db=('beltline'),
                                             charset='utf8mb4',
                                             cursorclass=pymysql.cursors.DictCursor)
     except Exception as e:
