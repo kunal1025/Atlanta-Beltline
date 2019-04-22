@@ -116,7 +116,7 @@ def manage():
     conn = db.get_connection()
     if request.method == 'GET':
         with conn.cursor() as cursor:
-            getEvents = 'Select B.Name as name, A.StaffCount, A.Duration, B.TotalVisits, B.Revenue FROM '\
+            getEvents = 'Select B.Name as name, A.StaffCount, A.Duration, B.TotalVisits, B.Revenue, A.StartDate FROM '\
                 '( '\
                 'SELECT Name, count(Username) AS StaffCount, datediff(event.EndDate, event.StartDate) '\
                 'AS Duration, event.SiteName, event.StartDate FROM assign_to join event using(Name, SiteName, StartDate) group by Name, SiteName, StartDate '\
@@ -148,7 +148,7 @@ def manage():
         #siteName = session['site']
         siteName = 'Inman Park'
         with conn.cursor() as cursor:
-            getEvents = 'Select B.Name as name, A.StaffCount as staffCount, A.Duration, B.TotalVisits, B.Revenue FROM '\
+            getEvents = 'Select B.Name as name, A.StaffCount as staffCount, A.Duration, B.TotalVisits, B.Revenue, A.StartDate FROM '\
                 '( '\
                 'SELECT Name, count(Username) AS StaffCount, datediff(event.EndDate, event.StartDate) '\
                 'AS Duration, event.SiteName, event.StartDate FROM assign_to join event using(Name, SiteName, StartDate) group by Name, SiteName, StartDate '\

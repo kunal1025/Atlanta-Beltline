@@ -109,15 +109,9 @@
                         </div>
                         <div class="col-md-2 offset-md-2">
                             <label for="">  </label>
-                            <button class="btn btn-primary btn-sm btn-block" type="submit">Create</button>   
-                        </div>
-                        <div class="col-md-2">
-                            <label for="">  </label>
-                            <button class="btn btn-primary btn-sm btn-block" type="submit">View/ Edit</button>   
-                        </div>
-                        <div class="col-md-2">
-                            <label for="">  </label>
-                            <button class="btn btn-primary btn-sm btn-block" type="submit">Delete</button>   
+                            <a href="/event/create">
+                                <button class="btn btn-primary btn-sm btn-block" type="button">Create</button>
+                            </a>  
                         </div>
                     </div>
                 </form>
@@ -125,25 +119,33 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                            <th scope="col"></th>
                             <th scope="col">Name</th>
                             <th scope="col">Staff Count</th>
                             <th scope="col">Duration (Days)</th>
                             <th scope="col">Total Visits</th>
                             <th scope="col">Total Revenue ($)</th>
+                            <th>Edit</th>
+                            <th>Delte</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for event in events %}
                                 <tr>
-                                    <td>
-                                        <input class="form-check-input" type="radio" name="name" id="name" value="" required>
-                                    </td>
                                     <td>{{event.name}}</td>
                                     <td>{{event.StaffCount}}</td>
                                     <td>{{event.Duration}}</td>
                                     <td>{{event.TotalVisits}}</td>
                                     <td>{{event.Revenue}}</td>
+                                    <td>
+                                        <a href="/event/edit/{{event.name}}/{{event.StartDate}}">
+                                            <button class="btn btn-primary btn-sm btn-block" type="button">Edit</button>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="/event/delete/{{event.name}}/{{event.StartDate}}">
+                                            <button class="btn btn-primary btn-sm btn-block" type="button">Delete</button>
+                                        </a>
+                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
