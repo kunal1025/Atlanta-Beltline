@@ -292,7 +292,7 @@ def transit_detail(SiteName, TransitType):
             "WHERE SiteName = %s AND TransitType = %s "\
             "GROUP BY TransitType, TransitRoute"
 
-            cursor.execute(query (sitename, transittype))
+            cursor.execute(query, (SiteName, TransitType))
             data = cursor.fetchall()
 
             return render_template('transit/transit_detail.html', transit=data)
@@ -325,7 +325,7 @@ def explore_site():
                 info = cursor.fetchall()
 
                 print(info)
-                return render_template('site/manage_site.html', sites = sites, managers = managers, names = info)
+                return render_template('site/explore_site.html', sites = sites, names = info)
         except Exception as e:
             print(e)
             return 'bad1'
@@ -350,7 +350,7 @@ def explore_site():
                 info = cursor.fetchall()
 
                 print('GET')
-                return render_template('site/manage_site.html', sites = sites, managers = managers, names = info)
+                return render_template('site/explore_site.html', sites = sites, managers = managers, names = info)
         except Exception as e:
             print(e)
             return 'bad2'
