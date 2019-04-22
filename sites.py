@@ -73,15 +73,12 @@ def create():
         newaddress = request.form.get('address')
         newmanager = request.form.get('manager')
         newopen = request.form.get('openeveryday')
-        with conn.cursor as cursor:
-            manager_username = "SELECT username from Manager join user using(Username) where SELECT username from Manager join user using(Username) where(concat(FirstName, ' ', LastName) = %s"
-            cursor.execute(manager_username, (newmanager,))
-
+        with conn.cursor() as cursor:
             edit_site = "INSERT into beltline.site values(%s, %s, %s, %s, %s)"
             cursor.execute(edit_site, (newname, newaddress, newzip, newopen, newmanager))
             conn.commit()
 
-        return redirect('/create')
+        return redirect('/site/create')
 
 @bp.route('/detail/<Name>', methods=['GET','POST'])
 def detail(Name):

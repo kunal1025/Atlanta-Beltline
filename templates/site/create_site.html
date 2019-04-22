@@ -65,7 +65,7 @@
                             <label for="manager">Manager</label>
                             <select class="form-control" name="manager" id="manager">
                                 {% for manager in managers %}
-                                    <option name = "manager" value="{{manager.Name}}">{{manager.Name}}</option>
+                                    <option name = "manager" value="{{manager.username}}">{{manager.Name}}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -77,7 +77,7 @@
 
                         <div class="col-md-4 mb-3">
                             <label for="Open Everyday">Open Everyday</label>
-                            <select class="form-control" name="type" id="type">
+                            <select class="form-control" name="openeveryday" id="type">
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
                                 </select>
