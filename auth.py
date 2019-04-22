@@ -129,8 +129,8 @@ def manage():
             cursor.execute(phones, (phone))
             conn.commit()
             #DELETE every row with username
-            deleteemail = "DELETE from email where Email = %s"
-            cursor.execute(deleteemail, (emails))
+            deleteemail = "DELETE from email where username = %s"
+            cursor.execute(deleteemail, (username))
             conn.commit()
             for email in emails:
                 #insert email, username into email (right order)
