@@ -74,7 +74,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6 offset-md-5">
-                        <input class="form-check-input" type="checkbox" value="" id="isVisitor" name="isVisitor" {% if data.isVisitor%} checked {% endif %}>
+                        <input class="form-check-input" type="checkbox" value="1" id="isVisitor" name="isVisitor" {% if data.isVisitor%} checked {% endif %}>
                         <label class="form-check-label" for="isVisitor">Visitor Account</label>
                         <p></p>
                     </div>
@@ -86,6 +86,7 @@
                         Please enter a valid email address
                     </div>
                 </div>
+                <div class="emails" id="emails">
                 {% for e in emails %}
                     <div class="mb-3 input-group">
                         <input type="email" class="form-control" name="email" placeholder="you@example.com" value="{{e.email}}">
@@ -95,7 +96,8 @@
                         <i class="remove_btn btn btn-danger" onclick="remove_email(this)">-</i>
                     </div>
                 {% endfor %}
-                <button type="button" class="btn btn-default btn-lg btn-circle">
+                </div>
+                <button type="button" class="btn btn-default btn-lg btn-circle" onclick="add_email(event)">
                     <i class="fas fa-plus"></i>
                 </button>
                 <hr class="mb-4">
@@ -138,7 +140,7 @@
         function add_email(event) {
             document.getElementById('emails').innerHTML +=
             `<div class="mb-3 input-group">
-                <input type="email" class="form-control" name="email[]" placeholder="you@example.com">
+                <input type="email" class="form-control" name="email" placeholder="you@example.com">
                 <div class="invalid-feedback">
                     Please enter a valid email address
                 </div>
