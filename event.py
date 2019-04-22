@@ -145,8 +145,7 @@ def manage():
         minRevenue = request.form.get('minRevenue')
         maxRevenue = request.form.get('maxRevenue')
 
-        #siteName = session['site']
-        siteName = 'Inman Park'
+        siteName = session['site']
         with conn.cursor() as cursor:
             getEvents = 'Select B.Name as name, A.StaffCount as staffCount, A.Duration, B.TotalVisits, B.Revenue, A.StartDate FROM '\
                 '( '\
