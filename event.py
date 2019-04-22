@@ -6,6 +6,11 @@ import db
 
 bp = Blueprint('event', __name__, url_prefix='/event')
 
+def ifnull(var,value):
+    if var == '' or var is None:
+        return value
+    else:
+        return var.replace("'", "")
 
 #fix me
 @bp.route('/create', methods=('GET', 'POST'))
@@ -48,48 +53,7 @@ def create():
         except Exception as e:
             print(e)
 
-#fix me
-@bp.route('/explore', methods=('GET', 'POST'))
-def explore():
-    conn = db.get_connection()
-    if request.method == "GET":
-        try:
-            with conn.cursor() as cursor:
-                # name = request.form.get('name')
-                # desc = request.form.get('desc')
-                siteName = request.form.get('site')
-                # startDate = request.form.get('startDate')
-                # endDate = request.form.get('endDate')
-                # minVisit = request.form.get('minVisit')
-                # maxVisit = request.form.get('maxVisit')
-                # minPrice = request.form.get('minPrice')
-                # maxVisit = request.form.get('maxVisit')
 
-                getSites = 'select Name as siteName from site'
-                cursor.execute(getSites)
-                sites = cursor.fetchall()
-                print(sites)
-
-                return render_template('/event/explore_event.html', sites=sites)
-        except Exception as e:
-            print(e)
-    else:
-        # with conn.cursor() as cursor:
-            # name = request.form.get('name')
-            # desc = request.form.get('desc')
-            # siteName = request.form.get('siteName')
-            # startDate = request.form.get('startDate')
-            # endDate = request.form.get('endDate')
-            # minVisit = request.form.get('minVisit')
-            # maxVisit = request.form.get('maxVisit')
-            # minPrice = request.form.get('minPrice')
-            # maxVisit = request.form.get('maxVisit')
-
-            # getSites = 'select name from site'
-            # cursor.execute(getSites)
-            # sites = cursor.fetchall()
-
-            return render_template('/')
 
 @bp.route('/visitor/detail/<name>/<start_date>/<site_name>', methods=('GET', 'POST'))
 def getDetail(name, start_date, site_name):
@@ -109,6 +73,88 @@ def getDetail(name, start_date, site_name):
     else:
         visit_date = request.form.get('visitDate')
 
+@bp.route('/explore_event', methods=('GET', 'POST'))
+def explore_event():
+    conn = db.get_connection()
+    if request.method == 'POST':
+        try:
+            with conn.cursor() as cursor:
+                getAllSites = 'SELECT name from site'
+                cursor.execute(getAllSites)
+                sites = cursor.fetchall()
+
+                name = request.form.get("name")
+                desc = request.form.get("desc")
+                desc1 = "%" + desc + "%"
+                startDate = request.form.get('startdate')
+                endDate = request.form.get('enddate')
+                priceMin = request.form.get('priceMin')
+                priceMax = request.form.get('priceMax')
+                visitMin = request.form.get('visitMin')
+                visitMax = request.form.get('visitMax')
+                visited = request.form.get('site')
+                sold_out = request.form.get('site1')
+                containSite = request.form.get('siteName')
+
+
+
+                getData = 'select A.Name, A.SiteName, A.TicketPrice, A.TicketRemaining, A.TotalVisits, B.MyVisits, A.StartDate, A.EndDate, A.description from  '\
+                            '(select test1.description, test1.EndDate, test1.StartDate, test1.Name, test1.SiteName, test1.Price as `TicketPrice`, (test2.capacity - test1.TotalVisits) AS `TicketRemaining` , test1.TotalVisits, count(username) AS `MyVisits` from test1 natural join test2  '\
+                            'group by Name, SiteName, Startdate)  '\
+                            'AS A  '\
+                            'Join  '\
+                            '(  '\
+                            'select test1.Name, test1.SiteName, count(username) AS `MyVisits` from test1 natural join test2  '\
+                            'Where username = "visitor1"  '\
+                            'group by Name, SiteName, Startdate  '\
+                            'UNION  '\
+                            'select Distinct VisitEventName as Name, SiteName, "0" as MyVisits from visit_event  '\
+                            'Where NOT concat(SiteName,StartDate,VisitEventName) in (Select concat(SiteName,StartDate,VisitEventName)e from visit_event Where username = "visitor1"))  '\
+                            'AS B  '\
+                            'on B.Name = A.Name AND A.SiteName = B.SiteName '\
+                            'WHERE A.Name like %s AND A.description like %s AND A.SiteName like %s AND A.StartDate like %s AND A.EndDate like %s AND '\
+                            '(A.TotalVisits BETWEEN %s AND %s) AND (A.TicketPrice BETWEEN %s AND %s) AND (B.MyVisits <= %s) AND A.TicketRemaining >= %s'
+
+                cursor.execute(getData, (ifnull(name, "%"), ifnull(desc1,"%"), ifnull(containSite, "%"), ifnull(startDate, "%"), ifnull(endDate, "%"), ifnull(visitMin, "0"), ifnull(visitMax,"10000000"), ifnull(priceMin,"0"), ifnull(priceMax, "1000000"),visited, sold_out))
+                info = cursor.fetchall()
+
+                print(info)
+                return render_template('event/explore_event.html', sites = sites, EventDB = info)
+        except Exception as e:
+            print(e)
+            return 'bad1'
+    else:
+        try:
+            with conn.cursor() as cursor:
+                getAllSites = 'SELECT name from site'
+                cursor.execute(getAllSites)
+                sites = cursor.fetchall()
+
+
+
+                getData = 'select A.Name, A.SiteName, A.TicketPrice, A.TicketRemaining, A.TotalVisits, B.MyVisits from  '\
+                            '(select test1.Name, test1.SiteName, test1.Price as `TicketPrice`, (test2.capacity - test1.TotalVisits) AS `TicketRemaining` , test1.TotalVisits, count(username) AS `MyVisits` from test1 natural join test2  '\
+                            'group by Name, SiteName, Startdate)  '\
+                            'AS A  '\
+                            'Join  '\
+                            '(  '\
+                            'select test1.Name, test1.SiteName, count(username) AS `MyVisits` from test1 natural join test2  '\
+                            'Where username = "visitor1"  '\
+                            'group by Name, SiteName, Startdate  '\
+                            'UNION  '\
+                            'select Distinct VisitEventName as Name, SiteName, "0" as MyVisits from visit_event  '\
+                            'Where NOT concat(SiteName,StartDate,VisitEventName) in (Select concat(SiteName,StartDate,VisitEventName)e from visit_event Where username = "visitor1"))  '\
+                            'AS B  '\
+                            'on B.Name = A.Name AND A.SiteName = B.SiteName'
+
+                cursor.execute(getData)
+                info = cursor.fetchall()
+                print(info)
+                print('GET')
+                return render_template('event/explore_event.html', sites = sites, EventDB = info)
+        except Exception as e:
+            print(e)
+            return 'bad2'
 @bp.route('/manage', methods=('GET', 'POST'))
 def manage():
     conn = db.get_connection()

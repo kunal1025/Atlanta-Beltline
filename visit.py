@@ -3,7 +3,13 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for)
 import db
 
-bp = Blueprint('visits', __name__, url_prefix='/visit')
+def ifnull(var,value):
+    if var == '' or var is None:
+        return value
+    else:
+        return var.replace("'", "")
+
+bp = Blueprint('visit', __name__, url_prefix='/visit')
 @bp.route('/history', methods=('GET',))
 def history():
     conn = db.get_connection()
