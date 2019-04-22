@@ -55,10 +55,9 @@ def create():
 
 
 
-@bp.route('/visitordetail/<name>/<start_date>/<site_name>', methods=('GET', 'POST'))
+@bp.route('/visitor/detail/<name>/<start_date>/<site_name>', methods=('GET', 'POST'))
 def getDetail(name, start_date, site_name):
     conn = db.get_connection()
-    print(session)
     username = session['username']
     if request.method == 'GET':
         with conn.cursor() as cursor:
@@ -67,15 +66,12 @@ def getDetail(name, start_date, site_name):
             'test1.EndDate as endDate, test1.description from test1 natural join test2 '\
             'Where username = %s AND test1.Name = %s AND '\
             'test1.SiteName = %s and test1.StartDate = %s '\
-            'group by Name, SiteName, Startdate'
+            'group by Name, SiteName, Startdate;'
             cursor.execute(getEvent, (username, name, site_name, start_date))
             event = cursor.fetchone()
-            print(event)
             return render_template('/details/visitor_event_detail.html', event=event)
     else:
         visit_date = request.form.get('visitDate')
-
-#@bp.route('/staff/detail/<name>/<start_date>/<site_name>', methods=('GET',))
 
 @bp.route('/explore_event', methods=('GET', 'POST'))
 def explore_event():
@@ -220,33 +216,34 @@ def edit(name, startDate):
     conn = db.get_connection()
     if request.method == 'GET':
         with conn.cursor() as cursor:
-            getEvent = 'select name, startDate, endDate, price, minstaffreq, capacity from event where name = %s AND startdate = %s'
+            getEvent = 'select sitename, name, startDate, endDate, price, minstaffreq, capacity, description from event where name = %s AND startdate = %s'
             cursor.execute(getEvent, (name, startDate))
             event = cursor.fetchone()
-            return render_template('/event/view_edit_event.html', data=event)
-
-@bp.route('/staffdetail/<name>/<start_date>/<site_name>', methods=('GET', 'POST'))
-def staffGetDetail(name, start_date, site_name):
-    conn = db.get_connection()
-    print(session)
-    username = session['username']
-    if request.method == 'GET':
-        with conn.cursor() as cursor:
-            getEvent = 'SELECT Name, SiteName, StartDate, EndDate, capacity, datediff(EndDate, StartDate) as durationDays, price, '\
-                        'description FROM event WHERE Name = %s AND SiteName = %s AND StartDate = %s '
-
-
-            cursor.execute(getEvent, (name, site_name, start_date))
-            event = cursor.fetchone()
-            print(event)
-            getStaff = 'Select concat(FirstName, " ", LastName) as name FROM assign_to JOIN user using(Username) WHERE assign_to.Name = %s AND SiteName = %s AND StartDate = %s '
-            cursor.execute(getStaff, (name, site_name, start_date))
+            getStaff = 'SELECT FirstName, LastName, concat(FirstName, " ", LastName) AS name '\
+            'FROM assign_to JOIN event USING '\
+            '(Name, SiteName, StartDate) JOIN user Using(Username) '\
+            'WHERE event.StartDate = %s AND event.EndDate = %s AND SiteName = %s'
+            cursor.execute(getStaff, (startDate, event['endDate'], event['sitename']))
             staff = cursor.fetchall()
+            for s in staff:
+                s['checked'] = 1
+            getAvailableStaff = 'SELECT staff.username, CONCAT(user.FirstName, " ", user.LastName) as name FROM staff NATURAL JOIN '\
+            'user WHERE staff.username NOT IN (SELECT username FROM beltline.staff_busy '\
+            'WHERE (StartDate between %s AND %s) OR (EndDate between %s AND %s))'
+            startDate = event['startDate']
+            endDate = event['endDate']
+            cursor.execute(getAvailableStaff, (startDate, endDate, startDate, endDate))
+            availableStaff = cursor.fetchall()
             print(staff)
-            staff_list = []
-            for x in staff:
-                staff_list.append(x['name'])
+            staff.append(availableStaff)
+            getResults = ''
+            return render_template('/event/view_edit_event.html', data=event, staff=staff)
 
-            return render_template('/details/staff_event_detail.html', event=event, staff = staff_list)
-    else:
-        return 'hi'
+@bp.route('/delete/<name>/<startDate>', methods=('GET',))
+def delete(name, startDate):
+    conn = db.get_connection()
+    with conn.cursor() as cursor:
+        deleteEvent = 'delete from event where name = %s AND startdate = %s'
+        cursor.execute(deleteEvent, (name, startDate))
+        conn.commit()
+        redirect('/edit/' + name + '/' + startDate)
