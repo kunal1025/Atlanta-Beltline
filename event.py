@@ -190,4 +190,14 @@ def edit(name, startDate):
             cursor.execute(getAvailableStaff)
             availableStaff = cursor.fetchall()
             staff.append(availableStaff)
+            getResults = ''
             return render_template('/event/view_edit_event.html', data=event, staff=staff)
+
+@bp.route('/delete/<name>/<startDate>', methods=('GET'))
+def delete(name, startDate):
+    conn = db.get_connection()
+    with conn.cursor() as cursor:
+        deleteEvent = 'delete from event where name = %s AND startdate = %s'
+        cursor.execute(deleteEvent, (name, startDate))
+        conn.commit()
+        redirect('/edit/' + name + '/' + startDate)
