@@ -17,6 +17,8 @@ def user():
     conn = db.get_connection()
     if request.method == 'GET':
         with conn.cursor() as cursor:
+            manage = "Select myview.username AS username, myview.EmailCount as emailcount, myview.Status as status, myview.UserType as usertype " \
+            "from myview"
             cursor.execute(manage)
             manage_user = cursor.fetchall()
 
