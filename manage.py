@@ -17,8 +17,6 @@ def user():
     conn = db.get_connection()
     if request.method == 'GET':
         with conn.cursor() as cursor:
-            manage = "Select myview.username AS username, myview.EmailCount as emailcount, myview.Status as status, myview.UserType as usertype " \
-            "from myview"
             cursor.execute(manage)
             manage_user = cursor.fetchall()
 
@@ -70,7 +68,7 @@ def manage_staff():
                 startDate = request.form.get('startdate')
                 endDate = request.form.get('enddate')
 
-                getSites = 'select name as siteName from site'
+                getSites = 'select name from site'
                 cursor.execute(getSites)
                 sites = cursor.fetchall()
 
@@ -84,7 +82,6 @@ def manage_staff():
 
                 cursor.execute(getTableInfo, (ifnull(startDate,"2001-01-01"), ifnull(endDate,"2040-01-01"), ifnull(startDate,"2001-01-01"), ifnull(endDate,"2040-01-01"), ifnull(firstName,"%"), ifnull(lastName,"%") ))
                 info = cursor.fetchall()
-                print(info)
 
                 return render_template('manage_staff.html', sites=sites, names=info)
         except Exception as e:
@@ -92,17 +89,12 @@ def manage_staff():
     else:
         try:
             with conn.cursor() as cursor:
-                getSites = 'select name as siteName from site'
+                getSites = 'select name from site'
                 cursor.execute(getSites)
                 sites = cursor.fetchall()
-                print(sites)
-                print('progress')
                 getInfo = 'SELECT concat(user.FirstName," ",user.LastName) AS "StaffName", staff_busy.Username, count(staff_busy.username) AS "EventShift", user.FirstName, user.LastName FROM beltline.staff_busy NATURAL JOIN user GROUP BY Username'
-                print('testtins')
                 cursor.execute(getInfo)
-                print('testtins')
                 info = cursor.fetchall()
-                print('progress2')
 
                 return render_template('manage_staff.html', sites=sites, names=info)
         except Exception as e:
