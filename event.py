@@ -23,20 +23,23 @@ def create():
                 price = request.form.get("price")
                 capacity = request.form.get('capacity')
                 minStaff = request.form.get('minstaff')
+                print(minStaff)
                 startDate = request.form.get('startDate')
                 endDate = request.form.get('endDate')
-
-                assignStaff = 'for username in checked_staff:' \
-                              'INSERT into assign_to(Username, %s, %s, siteName);'
-                cursor.execute(assignStaff, (name, startDate))
-                assignStaff = cursor.fetchall()
-                print(assignStaff)
-
+                staff = request.form.get('staff')
+                description = request.form.get('description')
+                site = session['site']
+                insertEvent = 'Insert into event values (%s, %s, %s, %s, %s, %s, %s, %s)'
+                cursor.execute(insertEvent, (name, startDate, site, capacity, price, endDate, description, minStaff))
+                conn.commit()
+                for s in staff:
+                    assignStaff ='INSERT into assign_to values (%s, %s, %s, %s);'
+                    cursor.execute(assignStaff, (s, name, startDate, startDate))
+                    conn.commit()
                 return render_template('/event/create_event.html', staffData=assignStaff)
         except Exception as e:
             print(e)
     else:
-        print("it was else block")
         try:
             with conn.cursor() as cursor:
                 startDate = request.form.get('startDate')
@@ -48,7 +51,6 @@ def create():
                                      #'OR (EndDate between CAST(%s AS DATE) AND CAST(%s AS DATE)))'
                 cursor.execute(getAvailableStaff)
                 availableStaff = cursor.fetchall()
-                print(availableStaff)
                 return render_template('/event/create_event.html', staffData=availableStaff)
         except Exception as e:
             print(e)

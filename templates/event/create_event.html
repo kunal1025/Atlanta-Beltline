@@ -48,7 +48,7 @@
                     <div class="col-md-4 offset-md-2">
                         <label for="minStaff">Minimum Staff Required</label>
                         <div class="input-group">
-                            <input type="num" class="form-control" name="minStaff" id="minStaff" value="" required>
+                            <input type="num" class="form-control" name="minstaff" id="minStaff" value="" required>
                         </div>
                     </div>
                 </div>
@@ -68,10 +68,7 @@
                 <div class="row">
                     <div class="col-md-12 mb-3">
                         <label for="desc">Description</label>
-                       <!--  <input type="text" class="form-control" name="desc" placeholder="" value="" required> -->
-   <!-- Make sure to check this implementation -->
-                       <textarea id="desc" style="width: 705px; height: 170px" rows="10" cols="80"></textarea>
-        <!-- Test the functionality -->
+                       <input type="text" class="form-control" name="description" placeholder="" value="" required>
                         <div class="invalid-feedback">
                             Please enter the description for the event.
                         </div>
@@ -88,7 +85,7 @@
                         {% for staff in staffData %}
                             <tr>
                                 <td>
-                                    <input class="form-check-input" type="checkbox" name="name" id="staff" value="{{staff.name}}">
+                                    <input class="form-check-input" type="checkbox" name="staff" id="staff" value="{{staff.username}}">
                                 </td>
                                 <td>{{staff.name}}</td>
                             </tr>
