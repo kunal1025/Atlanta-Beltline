@@ -109,8 +109,6 @@ def getDetail(name, start_date, site_name):
     else:
         visit_date = request.form.get('visitDate')
 
-#@bp.route('/staff/detail/<name>/<start_date>/<site_name>', methods=('GET',))
-
 @bp.route('/manage', methods=('GET', 'POST'))
 def manage():
     conn = db.get_connection()
