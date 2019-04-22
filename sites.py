@@ -73,12 +73,11 @@ def create():
 
         return redirect('/create')
 
-@bp.route('/detail/<Name>', methods=['GET'])
+@bp.route('/detail/<Name>', methods=['GET','POST'])
 def detail(Name):
     conn = db.get_connection()
     if request.method == 'GET':
         with conn.cursor() as cursor:
-            cursor.execute(getALLSITES)
             getALLSITES = "SELECT Name as site, OpenEveryDay as openEveryday, concat(Address, ' ' , Zipcode) as address FROM beltline.site WHERE Name = %s "
 
             cursor.execute(getALLSITES,(Name))
