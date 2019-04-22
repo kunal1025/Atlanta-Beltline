@@ -37,6 +37,7 @@ def login():
                     result = cursor.fetchone()
                     if result:
                         session['site'] = result['name']
+                        print(session['site'])
                     else:
                         session['site'] = ""
             return redirect('/')

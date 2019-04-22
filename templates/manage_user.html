@@ -51,37 +51,45 @@
                                 <label for=""> </label>
                                 <p></p>
                             </div>
-                            <div class="col-md-3 offset-md-1">
+                           <!--  <div class="col-md-3 offset-md-1">
                                 <label for="">  </label>
                                 <button class="btn btn-primary btn-sm btn-block" type="submit">Approve</button>   
                             </div>
                             <div class="col-md-3">
                                 <label for="">  </label>
                                 <button class="btn btn-primary btn-sm btn-block" type="submit">Decline</button>   
-                            </div>
+                            </div> -->
                         </div>
                 </form>
                 <form method="post">
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                            <th scope="col"></th>
                             <th scope="col">Username</th>
                             <th scope="col">Email Count</th>
                             <th scope="col">User Type</th>
                             <th scope="col">Status</th>
+                            <td>Action</td>
                             </tr>
                         </thead>
                         <tbody>
                             {% for user in users %}
                                 <tr>
-                                    <td>
-                                        <input class="form-check-input" type="radio" name="user" id="user" value="{{user.username}}" required>
-                                    </td>
                                     <td>{{user.username}}</td>
                                     <td>{{user.emailcount}}</td>
                                     <td>{{user.usertype}}</td>
                                     <td>{{user.status}}</td>
+                                    <td>
+                                        <a href="/manage/user/approved/{{user.username}}">
+                                            <button class="btn btn-primary btn-sm btn-block" type="button">Approve</button>
+                                        </a>
+                                    </td>
+
+                                    <td>
+                                        <a href="/manage/user/decline/{{user.username}}">
+                                            <button class="btn btn-primary btn-sm btn-block" type="button">Decline</button>
+                                        </a>
+                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
