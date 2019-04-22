@@ -52,35 +52,39 @@
                             <button class="btn btn-primary btn-sm btn-block" type="submit">Filter</button>
                         </div>
 
-                        <div class="col-md-2 offset-md-4">
+                        <!-- <div class="col-md-2 offset-md-4">
                             <label for="">  </label>
-                            <button class="btn btn-primary btn-sm btn-block" type="submit">View Event</button>
-                        </div>
+                            <a href="/event/visitor/detail/<name>/<start_date>/<site_name>">
+                                <button class="btn btn-primary btn-sm btn-block" type="submit">View Event</button>
+                            </a>
+                        </div> -->
                     </div>
                 </form>
                 <form method="post">
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                            <th scope="col"></th>
                             <th scope="col">Event Name</th>
                             <th scope="col">Site Name</th>
                             <th scope="col">Start Date</th>
                             <th scope="col">End Date</th>
                             <th scope="col">Staff Count</th>
+                            <th>Edit</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for event in events %}
                                 <tr>
-                                    <td>
-                                        <input class="form-check-input" type="radio" name="event" id="name" value="{{event.eventName}}" required>
-                                    </td>
                                     <td>{{event.eventName}}</td>
                                     <td>{{event.siteName}}</td>
                                     <td>{{event.startName}}</td>
                                     <td>{{event.endDate}}</td>
                                     <td>{{event.staffCount}}</td>
+                                    <td>
+                                        <a href="/event/visitor/detail/{{event.eventName}}/{{event.startDate}}/{{event.siteName}}">
+                                            <button class="btn btn-primary btn-sm btn-block" type="button">View Event</button>
+                                        </a>
+                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>

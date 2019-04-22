@@ -1,6 +1,6 @@
 from flask import Flask
 from flask import render_template, redirect, session, request
-import auth, register, transit, sites, event, detail, visit, schedule
+import auth, register, transit, sites, event, detail, visit, schedule, manage
 import db
 
 app = Flask(__name__)
