@@ -35,14 +35,14 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="name">Name</label>
-                            <input type="text" class="form-control" name="name" id="name" placeholder="" value="{{data.name}}">
+                            <input type="text" class="form-control" name="name" id="name" placeholder="" value="{{data.Name}}">
                             <div class="invalid-feedback">
                                 Valid first name is required.
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
                                 <label for="zipcode">Zipcode</label>
-                                <input type="text" class="form-control" name="zipcode" id="zipcode" placeholder="" value="{{data.zipcode}}">
+                                <input type="text" class="form-control" name="zipcode" id="zipcode" placeholder="" value="{{data.Zipcode}}">
                                 <div class="invalid-feedback">
                                     Valid zipcode is required.
                                 </div>
@@ -51,7 +51,7 @@
                     <div class="row">
                             <div class="col-md-12">
                                 <label for="address">Address</label>
-                                <input type="text" class="form-control" name="address" id="address" placeholder="" value="{{data.address}}">
+                                <input type="text" class="form-control" name="address" id="address" placeholder="" value="{{data.Address}}">
                                 <!-- <small id="passwordHelpInline" class="text-muted"> -->
                                     <!-- Must be 8-20 characters long. -->
                                 </small>
@@ -65,7 +65,7 @@
                             <label for="manager">Manager</label>
                             <select class="form-control" name="manager" id="manager">
                                 {% for manager in managers %}
-                                    <option name="manager" value="{{manager.Name}}">{{manager.Name}}</option>
+                                    <option name="manager" value="{{manager.username}}" {% if manager.is_selected%} selected {% endif %}>{{manager.Name}}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -79,7 +79,7 @@
                             <label for="openEveryday">Open Everyday</label>
                             <select class="form-control" name="openEveryday" id="openEveryday">
                                     <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
+                                    <option value="No" {% if 'No' == data.OpenEveryDay %} selected {% endif %}>No</option>
                                 </select>
                         </div>
                     </div>

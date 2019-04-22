@@ -16,12 +16,12 @@ def edit(SiteName):
     conn = db.get_connection()
     if request.method == 'GET':
         with conn.cursor() as cursor:
-            siteinfo = "select Address, Zipcode, Manager, OpenEveryDay from site JOIN user on site.Manager = user.Username where Name = %s"
+            siteinfo = "select Name, Address, Zipcode, Manager, OpenEveryDay from site JOIN user on site.Manager = user.Username where Name = %s"
             cursor.execute(siteinfo, (SiteName,))
-
-            manager_drop_down = "SELECT FirstName, LastName, concat(FirstName,' ',LastName) as Name from manager join user using(Username) "\
+            siteinfo = cursor.fetchone()
+            manager_drop_down = "SELECT FirstName, LastName, concat(FirstName,' ',LastName) as Name, username from manager join user using(Username) "\
             "where username not in (Select username from beltline.site join manager on manager.Username = site.Manager)"
-            current_manager = "SELECT concat(FirstName,' ',LastName) from manager join user using(Username) join site on manager.Username = site.Manager WHERE name = %s"
+            current_manager = "SELECT concat(FirstName,' ',LastName) as Name, username from manager join user using(Username) join site on manager.Username = site.Manager WHERE name = %s"
 
             cursor.execute(manager_drop_down)
             manager_info = cursor.fetchall()
@@ -37,14 +37,14 @@ def edit(SiteName):
         zip_code = request.form.get("zipcode")
         address = request.form.get('address')
         manager = request.form.get('manager')
-        openEveryday = request.form.get('openeveryday')
-        with conn.cursor as cursor:
+        openEveryday = request.form.get('openEveryday')
+        with conn.cursor() as cursor:
             edit_site = "UPDATE beltline.site SET Name = %s , Address = %s,"\
             "manager = %s, Zipcode = %s, OpenEveryDay = %s WHERE site.Name = %s"
-            cursor.execute(edit_site, (name, zip_code, address, manager, openEveryday))
+            cursor.execute(edit_site, (name, address, manager, zip_code,openEveryday, SiteName))
             conn.commit()
 
-    return redirect('/edit/' + SiteName)
+    return redirect('/site/edit/' + SiteName)
 
 @bp.route('/delete/<SiteName>', methods=['GET',])
 def delete(SiteName):
