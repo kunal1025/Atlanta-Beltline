@@ -6,8 +6,8 @@ import db
 
 bp = Blueprint('detail', __name__, url_prefix='/detail')
 
-@bp.route('/daily/<startDate>/<endDate>/<visitDate>', methods=('GET',))
-def daily(startDate, endDate, visitDate):
+@bp.route('/daily/<date>', methods=('GET',))
+def daily(date):
 	conn = db.get_connection()
 	try:
 		with conn.cursor() as cursor:
@@ -22,27 +22,27 @@ def daily(startDate, endDate, visitDate):
 			getName = 'SELECT VisitEventName, count(Username) AS Visit, price, price*count(Username) AS' \
 						'Revenue FROM event JOIN visit_event ON event.Name = visit_event.VisitEventName AND ' \
 						'event.SiteName = visit_event.SiteName AND event.StartDate = visit_event.StartDate WHERE ' \
-						'StartDate >= %s AND EndDate <= %s' \
-						'GROUP BY concat(Event.SiteName, VisitEventDate as %s, event.StartDate as %s)'
-			cursor.execute(getName, (startDate, endDate, visitDate, startDate))
+						'visit_event.VisitEventDate = %s' \
+						'GROUP BY concat(Event.SiteName, VisitEventDate, event.StartDate)'
+			cursor.execute(getName, (date))
 			names = cursor.fetchall()
-
-			return render_template('/detail/daily_detail.html', dataDB=names)
+			print(names)
+			return render_template('/detail/daily_detail.html', sites=names)
 	except Exception as e:
 		print(e)
 		print("exception")
-		return redirect('/')
+		# return redirect('/')
 
 #30
-@bp.route('/dailydetail/<VisitEventDate>', methods=['GET'])
-def daily_detail(VisitEventDetail):
-    conn = db.get_connection()
-    if request.method == 'GET':
-        with conn.cursor() as cursor:
+@bp.route('/dailydetail/<date>', methods=['GET'])
+def daily_detail(date):
+	conn = db.get_connection()
+	if request.method == 'GET':
+		with conn.cursor() as cursor:
+			sitename = session["site"]
+			# print(sitename)
 
-            sitename = session["site"]
-            
-            query = "SELECT VisitEventName AS eventName, group_concat(Distinct concat(User.FirstName, ' ', User.LastName)) as staffNames, " \
+			query = "SELECT VisitEventName AS eventName, group_concat(Distinct concat(User.FirstName, ' ', User.LastName)) as staffNames, " \
             "count(visit_event.Username) AS visits, Price, Price*count(visit_event.Username) as " \
             "revenue from event join visit_event on event.Name = visit_event.VisitEventName AND " \
             "event.SiteName = visit_event.SiteName AND event.StartDate = visit_event.StartDate JOIN " \
@@ -51,10 +51,10 @@ def daily_detail(VisitEventDetail):
             "WHERE visit_event.VisitEventDate = %s AND visit_event.SiteName = %s " \
             "group by event.SiteName, visit_event.VisitEventDate, event.StartDate"
 
-            cursor.execute(query, (VisitEventDate, sitename))
-            data = cursor.fetchall()
-            print(data)
-            return render_template('details/daily_detail.html',dataDB=data)
+			cursor.execute(query, (date))
+			data = cursor.fetchall()
+			print(data)
+			return render_template('details/daily_detail.html',dataDB=data)
 
 # 32
 @bp.route('/staffeventdetail/<SiteName>/<Name>/<StartDate>', methods=('GET',))

@@ -24,8 +24,8 @@
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label for="date">End Date</label>
-                            <input type="date" class="form-control" name="enddate" id="enddate" placeholder="" value="" required>
+                            <label for="endDate">End Date</label>
+                            <input type="date" class="form-control" name="endDate" id="endDate" placeholder="" value="" required>
                         </div>
                     </div>
 
@@ -105,25 +105,27 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                            <th scope="col"></th>
                             <th scope="col">Date</th>
                             <th scope="col">Event Count</th>
                             <th scope="col">Staff Count</th>
                             <th scope="col">Total Visits</th>
                             <th scope="col">Total Revenue</th>
+                            <th>View</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for data in dataDB %}
-                                <tr>
-                                    <td>
-                                        <input class="form-check-input" type="radio" name="data" id="date" value="{{data.date}}" required>
-                                    </td>
+                                <tr>        
                                     <td>{{data.date}}</td>
                                     <td>{{data.EventCount}}</td>
                                     <td>{{data.StaffCount}}</td>
                                     <td>{{data.TotalVisits}}</td>
                                     <td>{{data.TotalRevenue}}</td>
+                                    <td>
+                                        <a href="/detail/dailydetail/{{data.date}}">
+                                            <button class="btn btn-primary btn-sm btn-block" type="button">Daily Detail</button>
+                                        </a>
+                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
