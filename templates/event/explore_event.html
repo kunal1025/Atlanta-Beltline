@@ -117,38 +117,35 @@
                             <label for="">  </label>
                             <button class="btn btn-primary btn-sm btn-block" type="submit">Filter</button>
                         </div>
-
-                        <div class="col-md-3 offset-md-2">
-                            <label for="">  </label>
-                            <button class="btn btn-primary btn-sm btn-block" type="submit">Event Detail</button>
-                        </div>
                     </div>
                 </form>
                 <form method="GET">
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                            <th scope="col"></th>
                             <th scope="col">Event Name</th>
                             <th scope="col">Site Name</th>
                             <th scope="col">Ticket Price</th>
                             <th scope="col">Ticket Remaining</th>
                             <th scope="col">Total Visits</th>
                             <th scope="col">My Visits</th>
+                            <th>Event Detail</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for event in EventDB %}
                                 <tr>
-                                    <td>
-                                        <input class="form-check-input" type="radio" name="event" id="eventName" value="{{event.eventName}}" required>
-                                    </td>
                                     <td>{{event.Name}}</td>
                                     <td>{{event.SiteName}}</td>
                                     <td>{{event.TicketPrice}}</td>
                                     <td>{{event.TicketRemaining}}</td>
                                     <td>{{event.TotalVisits}}</td>
                                     <td>{{event.MyVisits}}</td>
+                                    <td>
+                                        <a href="/event/visitor/detail/{{event.Name}}/{{event.StartDate}}/{{event.Sitename}}">
+                                            <button class="btn btn-primary btn-sm btn-block" type="button">Detail</button>
+                                        </a>
+                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>

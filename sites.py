@@ -46,6 +46,16 @@ def edit(SiteName):
 
     return redirect('/edit/' + SiteName)
 
+@bp.route('/delete/<SiteName>', methods=['GET',])
+def delete(SiteName):
+    conn = db.get_connection()
+    with conn.cursor() as cursor:
+        deleteSite = 'delete from site where name = %s'
+        cursor.execute(deleteSite, SiteName)
+        conn.commit()
+        return redirect('/site/manage_site')
+
+
 @bp.route('/create', methods=['GET', 'POST'])
 def create():
     conn = db.get_connection()
@@ -215,7 +225,7 @@ def history():
             cursor.execute(getSites)
             sites = cursor.fetchall()
             print(sites)
-            return render_template('/transit/transit_history.html', sites=sites)
+            return render_template('/visit_history.html', sites=sites)
 
     else:
         with conn.cursor() as cursor:
