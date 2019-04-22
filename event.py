@@ -23,20 +23,23 @@ def create():
                 price = request.form.get("price")
                 capacity = request.form.get('capacity')
                 minStaff = request.form.get('minstaff')
+                print(minStaff)
                 startDate = request.form.get('startDate')
                 endDate = request.form.get('endDate')
-
-                assignStaff = 'for username in checked_staff:' \
-                              'INSERT into assign_to(Username, %s, %s, siteName);'
-                cursor.execute(assignStaff, (name, startDate))
-                assignStaff = cursor.fetchall()
-                print(assignStaff)
-
+                staff = request.form.get('staff')
+                description = request.form.get('description')
+                site = session['site']
+                insertEvent = 'Insert into event values (%s, %s, %s, %s, %s, %s, %s, %s)'
+                cursor.execute(insertEvent, (name, startDate, site, capacity, price, endDate, description, minStaff))
+                conn.commit()
+                for s in staff:
+                    assignStaff ='INSERT into assign_to values (%s, %s, %s, %s);'
+                    cursor.execute(assignStaff, (s, name, startDate, startDate))
+                    conn.commit()
                 return render_template('/event/create_event.html', staffData=assignStaff)
         except Exception as e:
             print(e)
     else:
-        print("it was else block")
         try:
             with conn.cursor() as cursor:
                 startDate = request.form.get('startDate')
@@ -48,7 +51,6 @@ def create():
                                      #'OR (EndDate between CAST(%s AS DATE) AND CAST(%s AS DATE)))'
                 cursor.execute(getAvailableStaff)
                 availableStaff = cursor.fetchall()
-                print(availableStaff)
                 return render_template('/event/create_event.html', staffData=availableStaff)
         except Exception as e:
             print(e)
@@ -190,6 +192,7 @@ def manage():
         maxRevenue = request.form.get('maxRevenue')
 
         siteName = session['site']
+        print(siteName)
         with conn.cursor() as cursor:
             getEvents = 'Select B.Name as name, A.StaffCount as staffCount, A.Duration, B.TotalVisits, B.Revenue, A.StartDate FROM '\
                 '( '\
@@ -205,7 +208,7 @@ def manage():
                 ') '\
                 'AS B '\
                 'ON A.Name = B.Name AND A.StartDate = B.StartDate AND A.SiteName = B.SiteName WHERE A.SiteName = %s AND A.StartDate between %s AND "2100-02-09" AND B.EndDate '\
-                'between "2001-02-09" AND %s AND Duration between %s AND %s '\
+                'between "1800-02-09" AND %s AND Duration between %s AND %s '\
                 'AND TotalVisits Between %s AND %s AND Revenue between %s AND %s'
             cursor.execute(getEvents, (siteName, startDate, endDate, minDuration, maxDuration, minVisit, maxVisit, minRevenue, maxRevenue))
             events = cursor.fetchall()
@@ -246,4 +249,4 @@ def delete(name, startDate):
         deleteEvent = 'delete from event where name = %s AND startdate = %s'
         cursor.execute(deleteEvent, (name, startDate))
         conn.commit()
-        redirect('/edit/' + name + '/' + startDate)
+        return redirect('/edit/' + name + '/' + startDate)

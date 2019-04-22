@@ -106,6 +106,11 @@ def manage():
             'beltline.employee JOIN beltline.user using(Username) WHERE username = %s'
             cursor.execute(getUser, session['username'])
             user = cursor.fetchone()
+            getVisitor = 'select username from visitor where username = %s'
+            cursor.execute(getVisitor, session['username'])
+            visitor = cursor.fetchone()
+            if (visitor):
+                user['isVisitor'] = 1
             getEmails = 'SELECT email from email where Username = %s'
             cursor.execute(getEmails, session['username'])
             emails = cursor.fetchall()
@@ -114,19 +119,19 @@ def manage():
             return render_template('/auth/manage_profile.html', data=user, em=email, emails=emails)
     else:
         username = session["username"]
-        first_name = request.form.get('firstName')
-        last_name = request.form.get('lastName')
+        first_name = request.form.get('firstname')
+        last_name = request.form.get('lastname')
         phone = request.form.get('phone')
         emails = request.form.getlist('email')
         isVisitor = request.form.get('isVisitor')
         with conn.cursor() as cursor:
             #update first,last, - user table
-            names = "UPDATE user SET FirstName = %s, LastName = %s, WHERE Username = %s"
-            cursor.execute(names, (first_name,last_name, username))
+            names = "UPDATE user SET FirstName = %s, LastName = %s WHERE Username = %s"
+            cursor.execute(names, (first_name, last_name, username))
             conn.commit()
             #update phones - employee
             phones = "UPDATE employee SET Phone = %s WHERE Username = %s"
-            cursor.execute(phones, (phone))
+            cursor.execute(phones, (phone, username))
             conn.commit()
             #DELETE every row with username
             deleteemail = "DELETE from email where username = %s"
@@ -137,15 +142,19 @@ def manage():
                 insertemail = "INSERT into beltline.email values(%s, %s)"
                 cursor.execute(insertemail, (username, email))
                 conn.commit()
-                if isVisitor == True:
-                    #check if in visitor table (look take transit)
-                    result = cursor.fetchone()
-                    if not result:
-                        #insert user into visitor table
-                        something = "INSERT into visitor values(%s)"
-                        cursor.execute(something, (username))
-                else:
-                #delete from visitor table
-                    deleteuser = "DELETE from visitor where Username = %s"
-                    cursor.execute(deleteuser, (username))
-            return redirect('/manage/profile')
+            if isVisitor:
+                #check if in visitor table (look take transit)
+                getVisitor = 'select username from visitor where username = %s'
+                cursor.execute(getVisitor, session['username'])
+                result = cursor.fetchone()
+                if not result:
+                    #insert user into visitor table
+                    something = "INSERT into visitor values(%s)"
+                    cursor.execute(something, (username))
+                    conn.commit()
+            else:
+            #delete from visitor table
+                deleteuser = "DELETE from visitor where Username = %s"
+                cursor.execute(deleteuser, (username))
+                conn.commit()
+            return redirect('/auth/manage/profile')
