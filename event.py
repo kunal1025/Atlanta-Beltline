@@ -150,8 +150,8 @@ def explore_event():
 
 
 
-                getData = 'select A.Name, A.SiteName, A.TicketPrice, A.TicketRemaining, A.TotalVisits, B.MyVisits from  '\
-                            '(select test1.Name, test1.SiteName, test1.Price as `TicketPrice`, (test2.capacity - test1.TotalVisits) AS `TicketRemaining` , test1.TotalVisits, count(username) AS `MyVisits` from test1 natural join test2  '\
+                getData = 'select A.Name, A.SiteName, A.TicketPrice, A.TicketRemaining, A.TotalVisits, B.MyVisits, A.StartDate from  '\
+                            '(select test1.StartDate, test1.Name, test1.SiteName, test1.Price as `TicketPrice`, (test2.capacity - test1.TotalVisits) AS `TicketRemaining` , test1.TotalVisits, count(username) AS `MyVisits` from test1 natural join test2  '\
                             'group by Name, SiteName, Startdate)  '\
                             'AS A  '\
                             'Join  '\
