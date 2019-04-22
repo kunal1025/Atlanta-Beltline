@@ -72,9 +72,9 @@ def create():
         newmanager = request.form.get('manager')
         newopen = request.form.get('type')
         with conn.cursor() as cursor:
-            manager_username = "SELECT username from Manager join user using(Username) where SELECT username from Manager join user using(Username) where(concat(FirstName, ' ', LastName) = %s"
+            manager_username = "SELECT username from Manager join user using(Username) where(concat(FirstName, ' ', LastName)) = %s"
             cursor.execute(manager_username, (newmanager,))
-
+            print(newaddress)
             edit_site = "INSERT into beltline.site values(%s, %s, %s, %s, %s)"
             cursor.execute(edit_site, (newname, newaddress, newzip, newopen, newmanager))
             conn.commit()
