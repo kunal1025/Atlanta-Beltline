@@ -16,31 +16,31 @@
   <body class="bg-light">
     <div class="container">
         <div class="py-5 text-center">
-            <h2>Event Detail</h2>
+            <h2>Staff Event Detail</h2>
         </div>
         <div class="col-md-8 offset-md-2">
             <form method='post' class="needs-validation" novalidate>
                 <div class="row">
                     <div class="col-md-4 mb-3">
                         <label for="eventName">Event</label>
-                        <input type="text" class="form-control" name="eventName" id="eventName" value="{{event.Name}}" readonly>
+                        <input type="text" class="form-control" name="eventName" id="eventName" value="{{event.eventName}}" readonly>
                     </div>
 
                     <div class="col-md-4 offset-md-4">
                         <label for="siteName">Site</label>
-                        <input type="text" class="form-control" name="siteName" id="siteName" value="{{event.SiteName}}" readonly>
+                        <input type="text" class="form-control" name="siteName" id="siteName" value="{{event.siteName}}" readonly>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-4 mb-3">
                         <label for="startDate">Start Date</label>
-                        <input type="text" class="form-control" name="startDate" id="startDate" value="{{event.StartDate}}" readonly>
+                        <input type="text" class="form-control" name="startDate" id="startDate" value="{{event.startDate}}" readonly>
                     </div>
 
                     <div class="col-md-4 mb-3">
                         <label for="endDate">End Date</label>
-                        <input type="text" class="form-control" name="endDate" id="endDate" value="{{event.EndDate}}" readonly>
+                        <input type="text" class="form-control" name="endDate" id="endDate" value="{{event.endDate}}" readonly>
                     </div>
 
                     <div class="col-md-4 mb-3">
@@ -78,7 +78,9 @@
                         <div class="col-md-3 offset-md-5">
                             <label for="">  </label>
                             <p></p>
-                            <button class="btn btn-primary btn-md btn-block" type="submit">Back</button>
+                            <a href="/schedule/view">
+                                <button class="btn btn-primary btn-md btn-block" type="button">Back</button>
+                            </a>
                         </div>
                     </div>
             </form>

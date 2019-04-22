@@ -75,6 +75,22 @@ def getDetail(name, start_date, site_name):
     else:
         visit_date = request.form.get('visitDate')
 
+@bp.route('/staff/detail/<name>/<start_date>/<site_name>', methods=('GET',))
+def getStaffDetail(name, start_date, site_name):
+    conn = db.get_connection()
+    username = session['username']
+    if request.method == 'GET':
+        with conn.cursor() as cursor:
+            getEvent = 'select test1.Name as eventName, test1.SiteName as siteName, test1.Price as price, '\
+            '(test2.capacity - test1.TotalVisits) AS ticketRemaining , test1.StartDate as startDate, '\
+            'test1.EndDate as endDate, test1.description from test1 natural join test2 '\
+            'Where test1.Name = %s AND '\
+            'test1.SiteName = %s and test1.StartDate = %s '\
+            'group by Name, SiteName, Startdate;'
+            cursor.execute(getEvent, (name, site_name, start_date))
+            event = cursor.fetchone()
+            return render_template('/details/staff_event_detail.html', event=event)
+
 @bp.route('/explore_event', methods=('GET', 'POST'))
 def explore_event():
     conn = db.get_connection()
