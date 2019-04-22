@@ -16,11 +16,11 @@
                 <h2>View Schedule</h2>
             </div>
             <div class="col-md-8 offset-md-2">
-                <form method="get">
+                <form method="post">
                     <div class="row">
                         <div class="col-md-5">
-                            <label for="tourName">Event Name</label>
-                            <input type="text" class="form-control" name="Event Name" id="Event Name" value="">
+                            <label for="eventName">Event Name</label>
+                            <input type="text" class="form-control" name="eventName" id="eventName" value="">
                         </div>
 
                         <div class="col-md-3">
@@ -28,31 +28,31 @@
                             <p></p>
                         </div>
 
-                        <div class="col-md-4">
-                            <label for="type">Desciption keyword</label>
+                        <div class="col-md-4 offset-md-0">
+                            <label for="Desciption">Desciption keyword</label>
                             <input type="text" class="form-control" name="desc" id="desc" value="">
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="date">Start Date</label>
-                            <input type="date" class="form-control" name="date" id="date" placeholder="" value="" required>
+                            <label for="startDate">Start Date</label>
+                            <input type="date" class="form-control" name="startDate" id="startDate" placeholder="" value="" required>
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label for="date">End Date</label>
-                            <input type="date" class="form-control" name="date" id="date" placeholder="" value="" required>
+                            <label for="endDate">End Date</label>
+                            <input type="date" class="form-control" name="endDate" id="endDate" placeholder="" value="" required>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-md-2 offset-md-1">
+                        <div class="col-md-2 offset-md-2">
                             <label for="">  </label>
                             <button class="btn btn-primary btn-sm btn-block" type="submit">Filter</button>   
                         </div>
                         
-                        <div class="col-md-2 offset-md-5">
+                        <div class="col-md-2 offset-md-4">
                             <label for="">  </label>
                             <button class="btn btn-primary btn-sm btn-block" type="submit">View Event</button>   
                         </div>
@@ -71,16 +71,16 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for name in DataDB %}
+                            {% for event in events %}
                                 <tr>
                                     <td>
-                                        <input class="form-check-input" type="radio" name="name" id="Event Name" value="{{name.Event Name}}" required>
+                                        <input class="form-check-input" type="radio" name="event" id="name" value="{{event.eventName}}" required>
                                     </td>
-                                    <td>{{name.Event Name}}</td>
-                                    <td>{{name.Site Name}}</td>
-                                    <td>{{name.Start Date}}</td>
-                                    <td>{{name.End Date}}</td>
-                                    <td>{{name.Staff Count}}</td>
+                                    <td>{{event.eventName}}</td>
+                                    <td>{{event.siteName}}</td>
+                                    <td>{{event.startName}}</td>
+                                    <td>{{event.endDate}}</td>
+                                    <td>{{event.staffCount}}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
