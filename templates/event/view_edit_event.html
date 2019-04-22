@@ -22,8 +22,8 @@
             <form method='post' class="needs-validation" novalidate>
                 <div class="row">
                     <div class="col-md-4 mb-3">
-                        <label for="transportType">Transport Type</label>
-                        <input type="text" class="form-control" id="transportType" value="{{data.transportType}}" readonly>
+                        <label for="transportType">Name</label>
+                        <input type="text" class="form-control" id="name" value="{{data.name}}" readonly>
                     </div>
 
                     <div class="col-md-4 offset-md-4">
@@ -40,19 +40,19 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="date">Start Date</label>
-                        <input type="date" class="form-control" name="date" id="date" placeholder="" value="" required>
+                        <input type="date" class="form-control" name="date" id="date" placeholder="" value="{{data.startDate}}" required>
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <label for="date">End Date</label>
-                        <input type="date" class="form-control" name="date" id="date" placeholder="" value="" required>
+                        <input type="date" class="form-control" name="date" id="date" placeholder="" value="{{data.endDate}}" required>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-4 mb-3">
                         <label for="minStaff">Minimum Staff Required</label>
-                        <input type="text" class="form-control" id="minStaff" value="{{data.minStaff}}" readonly>
+                        <input type="text" class="form-control" id="minStaff" value="{{data.minstaffreq}}" readonly>
                     </div>
 
                     <div class="col-md-4 offset-md-4">
@@ -153,11 +153,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for data in dataDB %}
+                        {% for event in events %}
                             <tr>
-                                <td>{{data.date}}</td>
-                                <td>{{data.Daily Visits}}</td>
-                                <td>{{data.Total Revenue}}</td>
+                                <td>{{event.date}}</td>
+                                <td>{{event.DailyVisits}}</td>
+                                <td>{{event.TotalRevenue}}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
