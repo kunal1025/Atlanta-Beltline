@@ -62,11 +62,11 @@ def history():
             getSites = siteSQL = 'SELECT name FROM site'
             transitsSQL ='SELECT TransitDate as date, TransitType as type, TransitRoute as route, Price as price FROM beltline.take JOIN beltline.transit ' \
                             'USING(TransitType, TransitRoute) JOIN connect using (TransitType, TransitRoute) '\
-                            'WHERE take.Username like "mary.smith" Group BY date, type, route'
+                            'WHERE take.Username like %s Group BY date, type, route'
 
             cursor.execute(getSites)
             sites = cursor.fetchall()
-            cursor.execute(transitsSQL)
+            cursor.execute(transitsSQL, (session['username']))
             transits = cursor.fetchall()
             print(transits)
             return render_template('/transit/transit_history.html', sites=sites, history = transits)
