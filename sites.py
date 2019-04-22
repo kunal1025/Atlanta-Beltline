@@ -22,14 +22,14 @@ def edit(SiteName):
             manager_drop_down = "SELECT FirstName, LastName, concat(FirstName,' ',LastName) as Name from manager join user using(Username) "\
             "where username not in (Select username from beltline.site join manager on manager.Username = site.Manager)"
             current_manager = "SELECT concat(FirstName,' ',LastName) from manager join user using(Username) join site on manager.Username = site.Manager WHERE name = %s"
-            
+
             cursor.execute(manager_drop_down)
             manager_info = cursor.fetchall()
-            
+
             cursor.execute(current_manager, (SiteName,))
             drop_down = cursor.fetchone()
             drop_down["is_selected"] = 1
-            
+
             manager_info.append(drop_down)
             return render_template('site/edit_site.html', data=siteinfo, managers=manager_info)
     else:
@@ -54,7 +54,7 @@ def create():
             manager_query = "SELECT FirstName, LastName, concat(FirstName,' ',LastName) as Name, username from manager join user using(Username)"\
             "where username not in (Select username from beltline.site join manager on manager.Username = site.Manager)"
             cursor.execute(manager_query)
-            managers = cursor.fetchall() 
+            managers = cursor.fetchall()
 
             return render_template('site/create_site.html', managers=managers)
     else:
@@ -72,7 +72,7 @@ def create():
             conn.commit()
 
         return redirect('/create')
-    
+
 @bp.route('/detail/<Name>', methods=['GET'])
 def detail(Name):
     conn = db.get_connection()
@@ -90,7 +90,7 @@ def detail(Name):
             sitedate = cursor.fetchone()
 
     return redirect('sites/site_detail.html', data=sites)
-    
+
 @bp.route('/manage_site', methods=('GET', 'POST'))
 def manage_site():
     conn = db.get_connection()
@@ -101,7 +101,7 @@ def manage_site():
                 cursor.execute(getAllSites)
                 sites = cursor.fetchall()
 
-                getAllManagers = '(SELECT username as name from manager join user using(Username) '\
+                getAllManagers = '(SELECT concat(user.FirstName," ",user.LastName) as name from manager join user using(Username) '\
                                     'where username in '\
                                     '(Select username from beltline.site join manager on manager.Username = site.Manager))'
                 cursor.execute(getAllManagers)
@@ -113,8 +113,8 @@ def manage_site():
                 openeveryDay = request.form.get('type')
                 print(openeveryDay)
 
-                getData = 'SELECT name, manager, OpenEveryDay from beltline.site ' \
-                            'WHERE name like %s AND manager like %s AND OpenEveryDay like %s'
+                getData = 'SELECT name,concat(user.FirstName," ",user.LastName) as manager, OpenEveryDay from beltline.site join user on site.manager = user.username ' \
+                            'WHERE name like %s AND concat(user.FirstName," ",user.LastName) like %s AND OpenEveryDay like %s'
 
                 cursor.execute(getData,(ifnull(containSite,"%"), ifnull(selectedManager, "%"), ifnull(openeveryDay, "%")))
                 info = cursor.fetchall()
@@ -132,14 +132,14 @@ def manage_site():
                 sites = cursor.fetchall()
                 print(sites)
 
-                getAllManagers = '(SELECT username as name from manager join user using(Username) '\
+                getAllManagers = '(SELECT concat(user.FirstName," ",user.LastName) as name from manager join user using(Username) '\
                                     'where username in '\
                                     '(Select username from beltline.site join manager on manager.Username = site.Manager))'
                 cursor.execute(getAllManagers)
                 managers = cursor.fetchall()
                 print(managers)
 
-                getData = 'SELECT name, manager, OpenEveryDay from beltline.site '
+                getData = 'SELECT name,concat(user.FirstName," ",user.LastName) as manager, OpenEveryDay from beltline.site join user on site.manager = user.username '
 
                 cursor.execute(getData)
                 info = cursor.fetchall()
@@ -204,7 +204,7 @@ def site_report():
         except Exception as e:
             print(e)
             return 'bad2'
-    
+
 #38
 @bp.route('/history', methods=('GET','POST'))
 def history():
@@ -248,11 +248,11 @@ def event_detail(SiteName, Name, StartDate):
         "SiteName AS siteName, StartDate as startDate, EndDate AS endDate, capacity, datediff(EndDate, StartDate) " \
         "as durationDays, price, description as 'desc' FROM assign_to JOIN user using (Username) JOIN event using" \
         "(SiteName, Name, StartDate) WHERE assign_to.SiteName = %s AND assign_to.StartDate = %s AND assign_to.Name = %s"
-        
+
         cursor.execute(query, (SiteName, StartDate, Name))
         data = cursor.fetchall()
         return render_template('details/staff_event_detail.html',event=data)
- 
+
 #30
 @bp.route('/dailydetail', methods=['GET'])
 def daily_detail():
@@ -268,7 +268,7 @@ def daily_detail():
             "event.SiteName = visit_event.SiteName AND event.StartDate = visit_event.StartDate WHERE "\
             "event.StartDate between %s AND '2100-02-09' AND event.EndDate between '2001-02-09' AND %s "\
             "GROUP BY Event.SiteName, VisitEventDate, event.StartDate"
- 
+
 
             cursor.execute(query, (startdate, enddate))
             data = cursor.fetchall()
@@ -296,7 +296,7 @@ def transit_detail(SiteName, TransitType):
             data = cursor.fetchall()
 
             return render_template('transit/transit_detail.html', transit=data)
- 
+
  #35
 
 @bp.route('/explore_site', methods=('GET', 'POST'))
@@ -315,13 +315,51 @@ def explore_site():
                 eventMax = request.form.get('eventMax')
                 visitMin = request.form.get('visitMin')
                 visitMax = request.form.get('visitMax')
-
+                oed = request.form.get('type')
                 containSite = request.form.get('site')
 
 
-                getData = 'SELECT name, manager, OpenEveryDay from beltline.site '
+                getData = 'Select G.SiteName, G.eventcount, F.TotalVisits, F.MyVisits from   '\
+                            '(SELECT site.Name as SiteName, count(*) as eventcount  FROM beltline.site JOIN event on    '\
+                            'site.name = event.SiteName group by(site.Name)) AS G   '\
+                            'JOIN   '\
+                            '(   '\
+                            'Select C.SiteName, C.visit1 as `TotalVisits` , D.visit2 as `MyVisits` from   '\
+                            '(Select A.SiteName, (A.visits + B.visits) as visit1 from   '\
+                            '(SELECT Username, SiteName, count(Username) as visits FROM visit_site    '\
+                            'WHERE `Date` BETWEEN %s AND %s   '\
+                            'GROUP BY(SiteName)) as A   '\
+                            'join   '\
+                            '(SELECT Username, SiteName, count(Username) as visits FROM visit_event    '\
+                            'WHERE `VisitEventDate` BETWEEN %s AND %s   '\
+                            'GROUP BY(SiteName))   '\
+                            'AS B    '\
+                            'on A.SiteName = B.SiteName   '\
+                            'Group By (A.SiteName))   '\
+                            'AS C   '\
+                            'Join   '\
+                            '(Select A1.SiteName, (A1.visits + B1.visits) as visit2 from   '\
+                            '(SELECT Username, SiteName, count(Username) as visits FROM visit_site     '\
+                            'WHERE Username = %s AND `Date` BETWEEN %s AND %s   '\
+                            'GROUP BY(SiteName)) AS A1   '\
+                            'join   '\
+                            '(SELECT Username, SiteName, count(Username) as visits FROM visit_event     '\
+                            'WHERE Username = %s AND `VisitEventDate` BETWEEN %s AND %s   '\
+                            'GROUP BY(SiteName)) AS B1   '\
+                            'ON A1.Username = B1.Username   '\
+                            'Group By (SiteName))   '\
+                            'AS D   '\
+                            'ON C.SiteName = D.SiteName   '\
+                            ')   '\
+                            'AS F   '\
+                            'ON   '\
+                            'G.SiteName = F.SiteName   '\
+                            'WHERE G.SiteName like %s AND (F.TotalVisits BETWEEN %s AND %s) AND (G.eventcount BETWEEN %s  AND %s)   '\
 
-                cursor.execute(getData)
+
+                #(ifnull(startDate, "2000-01-01"), ifnull(endDate,"2040-01-01"), ifnull(oed,"%"), ifnull(startDate, "2000-01-01"), ifnull(endDate,"2040-01-01"), ifnull(oed,"%"), ifnull(startDate, "2000-01-01"), ifnull(endDate,"2040-01-01"), ifnull(oed,"%"), ifnull(startDate, "2000-01-01"), ifnull(endDate,"2040-01-01"), ifnull(oed,"%"), ifnull(containSite,"%"), ifnull(visitMin, "%"), ifnull(visitMax, "%"), ifnull(eventMin, "%"), ifnull(eventMax,"%"))
+                cursor.execute(getData,(ifnull(startDate, "2000-01-01"), ifnull(endDate,"2040-01-01"),ifnull(startDate, "2000-01-01"), ifnull(endDate,"2040-01-01"),"mary.smith",ifnull(startDate, "2000-01-01"), ifnull(endDate,"2040-01-01"),"mary.smith",ifnull(startDate, "2000-01-01"), ifnull(endDate,"2040-01-01"),ifnull(containSite,"%"), ifnull(visitMin, "0"), ifnull(visitMax, "10000"), ifnull(eventMin, "0"), ifnull(eventMax,"1000")))
+                #cursor.execute(getData)
                 info = cursor.fetchall()
 
                 print(info)
@@ -337,18 +375,43 @@ def explore_site():
                 sites = cursor.fetchall()
                 print(sites)
 
-                getAllManagers = '(SELECT username as name from manager join user using(Username) '\
-                                    'where username in '\
-                                    '(Select username from beltline.site join manager on manager.Username = site.Manager))'
-                cursor.execute(getAllManagers)
-                managers = cursor.fetchall()
-                print(managers)
-
-                getData = 'SELECT name, manager, OpenEveryDay from beltline.site '
+                getData = 'Select G.SiteName, G.eventcount, F.TotalVisits, F.MyVisits from '\
+                            '(SELECT site.Name as SiteName, count(*) as eventcount  FROM beltline.site JOIN event on  '\
+                            'site.name = event.SiteName group by(site.Name)) AS G '\
+                            'JOIN '\
+                            '( '\
+                            'Select C.SiteName, C.visit1 as `TotalVisits` , D.visit2 as `MyVisits` from '\
+                            '(Select A.SiteName, (A.visits + B.visits) as visit1 from '\
+                            '(SELECT Username, SiteName, count(Username) as visits FROM visit_site  '\
+                            'GROUP BY(SiteName)) as A '\
+                            'join '\
+                            '(SELECT Username, SiteName, count(Username) as visits FROM visit_event  '\
+                            'GROUP BY(SiteName)) '\
+                            'AS B  '\
+                            'on A.Username = B.Username '\
+                            'Group By (A.SiteName)) '\
+                            'AS C '\
+                            'Join '\
+                            '(Select A1.SiteName, (A1.visits + B1.visits) as visit2 from '\
+                            '(SELECT Username, SiteName, count(Username) as visits FROM visit_site   '\
+                            'WHERE Username = "mary.smith" '\
+                            'GROUP BY(SiteName)) AS A1 '\
+                            'join '\
+                            '(SELECT Username, SiteName, count(Username) as visits FROM visit_event   '\
+                            'WHERE Username = "mary.smith" '\
+                            'GROUP BY(SiteName)) AS B1 '\
+                            'ON A1.Username = B1.Username '\
+                            'Group By (SiteName)) '\
+                            'AS D '\
+                            'ON C.SiteName = D.SiteName '\
+                            ') '\
+                            'AS F '\
+                            'ON '\
+                            'G.SiteName = F.SiteName'
 
                 cursor.execute(getData)
                 info = cursor.fetchall()
-
+                print(info)
                 print('GET')
                 return render_template('site/explore_site.html', sites = sites, managers = managers, names = info)
         except Exception as e:
