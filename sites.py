@@ -43,16 +43,20 @@ def edit(SiteName):
         address = request.form.get('address')
         manager = request.form.get('manager')
         openEveryday = request.form.get('openEveryday')
+        name = 'Inman Park'
+        print(address)
         with conn.cursor() as cursor:
             manager_username = "SELECT username from Manager join user using(Username) where(concat(FirstName, ' ', LastName)) = %s"
             cursor.execute(manager_username, (manager,))
+            manager_username = cursor.fetchone()
+            manager_username = manager_username['username']
             print(zip_code)
-            edit_site = "UPDATE beltline.site `Address` = %s," \
-            "Manager = %s, Zipcode = %s, OpenEveryDay = %s WHERE site.Name = %s"
-            cursor.execute(edit_site, (address, manager, zip_code, openEveryday, name))
+            edit_site = 'UPDATE beltline.site set `Address` = %s, ' \
+            'Manager = %s, Zipcode = %s, OpenEveryDay = %s WHERE site.Name = %s'
+            cursor.execute(edit_site, (address, manager_username, zip_code, openEveryday, name))
             conn.commit()
 
-    return redirect('/edit/' + SiteName)
+    return redirect('/event/edit/' + SiteName)
 
 @bp.route('/create', methods=['GET', 'POST'])
 def create():
