@@ -21,18 +21,19 @@ def login():
             user = cursor.fetchone()
         if user is None:
             error = 'Incorrect email'
-        elif not password == user['password']:
+        elif not password == check_password_hash(user['password']):
             error = 'Incorrect password'
-        #elif not user['status'] == 'Approved':
-         #   error = 'Account not approved'
+        elif not user['status'] == 'Approved':
+           error = 'Account not approved'
 
         if error is None:
             session.clear()
             session['username'] = user['username']
             session['role'] = getRole(user['username'])
-            if session['role'] == 'manager':
+            if session['role'] == 'manager' or session['role'] == 'manager-visitor':
                 with conn.cursor() as cursor:
                     getSite = 'select name from site where manager = %s'
+                    print(session['username'])
                     cursor.execute(getSite, session['username'])
                     print(session['username'])
                     result = cursor.fetchone()
@@ -40,6 +41,7 @@ def login():
                         session['site'] = result['name']
                     else:
                         session['site'] = ""
+                    print(session['site'])
             return redirect('/')
 
 
