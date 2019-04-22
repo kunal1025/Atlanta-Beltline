@@ -114,19 +114,19 @@ def manage():
             return render_template('/auth/manage_profile.html', data=user, em=email, emails=emails)
     else:
         username = session["username"]
-        first_name = request.form.get('firstName')
-        last_name = request.form.get('lastName')
+        first_name = request.form.get('firstname')
+        last_name = request.form.get('lastname')
         phone = request.form.get('phone')
         emails = request.form.getlist('email')
         isVisitor = request.form.get('isVisitor')
         with conn.cursor() as cursor:
             #update first,last, - user table
-            names = "UPDATE user SET FirstName = %s, LastName = %s, WHERE Username = %s"
-            cursor.execute(names, (first_name,last_name, username))
+            names = "UPDATE user SET FirstName = %s, LastName = %s WHERE Username = %s"
+            cursor.execute(names, (first_name, last_name, username))
             conn.commit()
             #update phones - employee
             phones = "UPDATE employee SET Phone = %s WHERE Username = %s"
-            cursor.execute(phones, (phone))
+            cursor.execute(phones, (phone, username))
             conn.commit()
             #DELETE every row with username
             deleteemail = "DELETE from email where username = %s"
@@ -148,4 +148,4 @@ def manage():
                 #delete from visitor table
                     deleteuser = "DELETE from visitor where Username = %s"
                     cursor.execute(deleteuser, (username))
-            return redirect('/manage/profile')
+            return redirect('/auth/manage/profile')

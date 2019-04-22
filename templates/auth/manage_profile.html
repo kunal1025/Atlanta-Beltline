@@ -20,7 +20,7 @@
             <h2>Manage Profile</h2>
         </div>
         <div class="col-md-8 offset-md-2">
-            <form method="put">
+            <form method="post">
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="firstName">First name</label>
@@ -31,7 +31,7 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="lastName">Last name</label>
-                        <input type="text" class="form-control" name="lastName" id="lastName" placeholder="" value="{{data.lastName}}" required>
+                        <input type="text" class="form-control" name="lastname" id="lastName" placeholder="" value="{{data.lastName}}" required>
                         <div class="invalid-feedback">
                             Valid last name is required.
                         </div>
