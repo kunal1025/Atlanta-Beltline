@@ -78,18 +78,22 @@ def detail(Name):
     conn = db.get_connection()
     if request.method == 'GET':
         with conn.cursor() as cursor:
-            getALLSITES = "SELECT Name as site, OpenEveryDay as openEveryday, concat(Address, ', Zipcode) as address FROM beltline.site"
             cursor.execute(getALLSITES)
+            getALLSITES = "SELECT Name as site, OpenEveryDay as openEveryday, concat(Address, ' ' , Zipcode) as address FROM beltline.site WHERE Name = %s "
+
+            cursor.execute(getALLSITES,(Name))
             sites = cursor.fetchone()
-        return redirect('sites/site_detail.html', data=sites)
+            print(sites)
+        return render_template('site/site_detail.html', dataDB = sites )
     else:
         with conn.cursor() as cursor:
-            sitedate = "INSERT into visit_site (%s, %s, %s)"
-            cursor.execute(sitedate, (Username, SiteName, Date))
+            Date = request.form.get('date')
+            sitedate = "INSERT into visit_site VALUES (%s, %s, %s)"
+            cursor.execute(sitedate, (session['username'], Name, Date))
             conn.commit()
             sitedate = cursor.fetchone()
 
-    return redirect('sites/site_detail.html', data=sites)
+        return redirect('site/site_detail.html')
 
 @bp.route('/manage_site', methods=('GET', 'POST'))
 def manage_site():
@@ -215,7 +219,7 @@ def history():
             cursor.execute(getSites)
             sites = cursor.fetchall()
             print(sites)
-            return render_template('/transit/transit_history.html', sites=sites)
+            return render_template('/visit_history.html', sites=sites)
 
     else:
         with conn.cursor() as cursor:
