@@ -34,10 +34,10 @@ def login():
                 with conn.cursor() as cursor:
                     getSite = 'select name from site where manager = %s'
                     cursor.execute(getSite, session['username'])
-                    print(session['username'])
                     result = cursor.fetchone()
                     if result:
                         session['site'] = result['name']
+                        print(session['site'])
                     else:
                         session['site'] = ""
             return redirect('/')

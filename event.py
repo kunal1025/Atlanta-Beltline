@@ -215,16 +215,6 @@ def manage():
             events = cursor.fetchall()
             return render_template('/event/manage_event.html', events=events)
 
-@bp.route('/edit/<name>/<startDate>', methods=('GET', 'POST'))
-def edit(name, startDate):
-    conn = db.get_connection()
-    if request.method == 'GET':
-        with conn.cursor() as cursor:
-            getEvent = 'select sitename, name, startDate, endDate, price, minstaffreq, capacity, description from event where name = %s AND startdate = %s'
-            cursor.execute(getEvent, (name, startDate))
-            event = cursor.fetchone()
-            return render_template('/event/view_edit_event.html', data=event)
-
 @bp.route('/staffdetail/<name>/<start_date>/<site_name>', methods=('GET', 'POST'))
 def staffGetDetail(name, start_date, site_name):
     conn = db.get_connection()
