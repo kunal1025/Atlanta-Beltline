@@ -82,54 +82,54 @@
                             </div>
                             <div class="col-md-2 offset-md-2">
                                 <label for="">  </label>
-                                <button class="btn btn-primary btn-sm btn-block" type="submit">Create</button>   
-                            </div>
-                            <div class="col-md-2">
-                                <label for="">  </label>
-                                <button class="btn btn-primary btn-sm btn-block" type="submit">Edit</button>   
-                            </div>
-                            <div class="col-md-2">
-                                <label for="">  </label>
-                                <button class="btn btn-primary btn-sm btn-block" type="submit">Delete</button>   
+                                <a href="/transit/create">
+                                    <button class="btn btn-primary btn-sm btn-block" type="button">Create</button>  
+                                </a> 
                             </div>
                         </div>
                 </form>
-                <form method="get">
-                    <table class="table table-striped">
-                        <thead>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                        <th scope="col">Route</th>
+                        <th scope="col">Transport Type</th>
+                        <th scope="col">Price</th>
+                        <th scope="col"># Connected Sites</th>
+                        <th scope="col"># Transit Logged</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for route in routes %}
                             <tr>
-                            <th scope="col"></th>
-                            <th scope="col">Route</th>
-                            <th scope="col">Transport Type</th>
-                            <th scope="col">Price</th>
-                            <th scope="col"># Connected Sites</th>
-                            <th scope="col"># Transit Logged</th>
+                                <td>{{route.route}}</td>
+                                <td>{{route.transportType}}</td>
+                                <td>{{route.price}}</td>
+                                <td>{{route.numConnectedSites}}</td>
+                                <td>{{route.numTransitLogged}}</td>
+                                <td>
+                                    <a href="/transit/edit/{{route.transportType}}/{{route.route}}">
+                                        <button class="btn btn-primary btn-sm btn-block" type="button">Edit</button>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="/transit/delete/{{route.transportType}}/{{route.route}}">
+                                        <button class="btn btn-primary btn-sm btn-block" type="button">Delete</button>
+                                    </a>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for route in routes %}
-                                <tr>
-                                    <td>
-                                        <input class="form-check-input" type="radio" name="name" id="route" value="{{route.route}}" required>
-                                    </td>
-                                    <td>{{route.route}}</td>
-                                    <td>{{route.transportType}}</td>
-                                    <td>{{route.price}}</td>
-                                    <td>{{route.numConnectedSites}}</td>
-                                    <td>{{route.numTransitLogged}}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    <div class="row">
-                        <div class="col-md-3 offset-md-4">
-                            <label for="">  </label>
-                            <p></p>
-                            <a href="/">
-                                <button class="btn btn-primary btn-sm btn-block" type="button">Back</button>
-                            </a>
-                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-md-3 offset-md-4">
+                        <label for="">  </label>
+                        <p></p>
+                        <a href="/">
+                            <button class="btn btn-primary btn-sm btn-block" type="button">Back</button>
+                        </a>
                     </div>
-                </form>
+                </div>
             </div>
         </div>

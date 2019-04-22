@@ -182,6 +182,15 @@ def edit(transitType, route):
                     conn.commit()
         return redirect('/transit/edit/' + transitType + '/' + route)
 
+@bp.route('/delete/<transitType>/<route>', methods=('GET',))
+def delete(transitType, route):
+    conn = db.get_connection()
+    with conn.cursor() as cursor:
+        deleteTransit = 'Delete from transit where TransitType = %s AND TransitRoute = %s'
+        cursor.execute(deleteTransit, (transitType, route))
+        conn.commit()
+        return redirect('/transit/manage')
+
 @bp.route('/manage', methods=('GET', 'POST'))
 def manage():
     conn = db.get_connection()
