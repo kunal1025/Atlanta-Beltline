@@ -1,6 +1,6 @@
 from flask import Flask
 from flask import render_template, redirect, session, request
-import auth, register, transit, sites, event, detail, visit, schedule
+import auth, register, transit, sites, event, detail, schedule, manage
 import db
 
 app = Flask(__name__)
@@ -36,7 +36,6 @@ app.register_blueprint(transit.bp)
 app.register_blueprint(sites.bp)
 app.register_blueprint(event.bp)
 app.register_blueprint(detail.bp)
-app.register_blueprint(visit.bp)
 app.register_blueprint(schedule.bp)
 app.register_blueprint(manage.bp)
 
