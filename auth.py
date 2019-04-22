@@ -15,7 +15,7 @@ def login():
         password = request.form['password']
         conn = db.get_connection()
         error = None
-        sql = 'select user.username, password from user join email on user.username = email.username where email = %s'
+        sql = 'select user.username, password, user_status as status from user join email on user.username = email.username where email = %s'
         with conn.cursor() as cursor:
             cursor.execute(sql, email)
             user = cursor.fetchone()
@@ -23,12 +23,25 @@ def login():
             error = 'Incorrect email'
         elif not password == user['password']:
             error = 'Incorrect password'
+        #elif not user['status'] == 'Approved':
+         #   error = 'Account not approved'
 
         if error is None:
             session.clear()
             session['username'] = user['username']
             session['role'] = getRole(user['username'])
+            if session['role'] == 'manager':
+                with conn.cursor() as cursor:
+                    getSite = 'select name from site where manager = %s'
+                    cursor.execute(getSite, session['username'])
+                    print(session['username'])
+                    result = cursor.fetchone()
+                    if result:
+                        session['site'] = result['name']
+                    else:
+                        session['site'] = ""
             return redirect('/')
+
 
         flash(error)
 
