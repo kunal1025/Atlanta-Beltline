@@ -22,7 +22,7 @@ def daily(date):
 			getName = 'SELECT VisitEventName, count(Username) AS Visit, price, price*count(Username) AS' \
 						'Revenue FROM event JOIN visit_event ON event.Name = visit_event.VisitEventName AND ' \
 						'event.SiteName = visit_event.SiteName AND event.StartDate = visit_event.StartDate WHERE ' \
-						'visit_event.VisitEventDate = %s' \
+						'visit_event.VisitEventDate = %s ' \
 						'GROUP BY concat(Event.SiteName, VisitEventDate, event.StartDate)'
 			cursor.execute(getName, (date))
 			names = cursor.fetchall()
@@ -48,7 +48,7 @@ def daily_detail(date):
             "event.SiteName = visit_event.SiteName AND event.StartDate = visit_event.StartDate JOIN " \
             "assign_to ON assign_to.Name = event.Name AND assign_to.SiteName = event.SiteName AND " \
             "assign_to.StartDate = event.StartDate JOIN user on user.Username = assign_to.Username " \
-            "WHERE visit_event.VisitEventDate = %s AND visit_event.SiteName = %s " \
+            "WHERE visit_event.VisitEventDate = %s " \
             "group by event.SiteName, visit_event.VisitEventDate, event.StartDate"
 
 			cursor.execute(query, (date))
@@ -65,9 +65,9 @@ def event_detail(SiteName, Name, StartDate):
         "SiteName AS siteName, StartDate as startDate, EndDate AS endDate, capacity, datediff(EndDate, StartDate) " \
         "as durationDays, price, description as `desc` FROM assign_to JOIN user using (Username) JOIN event using" \
         "(SiteName, Name, StartDate) WHERE assign_to.SiteName = %s AND assign_to.StartDate = %s AND assign_to.Name = %s"
-        
+
         cursor.execute(query, (SiteName, StartDate, Name))
         data = cursor.fetchone()
         print(data)
         return render_template('details/staff_event_detail.html',event=data)
- 
+
