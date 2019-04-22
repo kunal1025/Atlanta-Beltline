@@ -16,7 +16,7 @@
                 <h2>Manage Event</h2>
             </div>
             <div class="col-md-8 offset-md-2">
-                <form method="get">
+                <form method="post">
                     <div class="row">
                         <div class="col-md-5">
                             <label for="tourName">Name</label>
@@ -30,26 +30,26 @@
 
                         <div class="col-md-4">
                             <label for="type">Desciption keyword</label>
-                            <input type="text" class="form-control" name="desc" id="desc" value="">
+                            <input type="text" class="form-control" name="description" id="description" value="">
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="date">Start Date</label>
-                            <input type="date" class="form-control" name="date" id="date" placeholder="" value="" required>
+                            <input type="date" class="form-control" name="startDate" id="date" placeholder="" value="" required>
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label for="date">End Date</label>
-                            <input type="date" class="form-control" name="date" id="date" placeholder="" value="" required>
+                            <input type="date" class="form-control" name="endDate" id="date" placeholder="" value="" required>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-3">
                             <label for="rangeMin">Duration (Min # day)</label>
-                            <input type="number" class="form-control" name="rangeMin" id="rangeMin" placeholder="" value="" min="0">
+                            <input type="number" class="form-control" name="minDuration" id="minDuration" placeholder="" value="" min="0">
                         </div>
                         <div class="col-md-0">
                             <label for=""> </label>
@@ -58,7 +58,7 @@
                         </div>
                         <div class="col-md-2">
                             <label for="rangeMax">(Max #)</label>
-                            <input type="number" class="form-control" name="rangeMax" id="rangeMax" placeholder="" value="" min="0">
+                            <input type="number" class="form-control" name="maxDuration" id="maxDuration" placeholder="" value="" min="0">
                         </div>
     <!-- Add functionality of the same day range. (Note 1, Screen 25) -->
 
@@ -69,7 +69,7 @@
 
                         <div class="col-md-3">
                             <label for="visitMin">Total Visits (Min)</label>
-                            <input type="number" class="form-control" name="visitMin" id="visitMin" placeholder="" value="" min="0">
+                            <input type="number" class="form-control" name="minVisit" id="minVisit" placeholder="" value="" min="0">
                         </div>
                         <div class="col-md-0">
                             <label for=""> </label>
@@ -78,7 +78,23 @@
                         </div>
                         <div class="col-md-2">
                             <label for="visitMax">(Max)</label>
-                            <input type="number" class="form-control" name="visitMax" id="visitMax" placeholder="" value="" min="0">
+                            <input type="number" class="form-control" name="maxVisit" id="maxVisit" placeholder="" value="" min="0">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label for="rangeMin">Total Revenue Range (low)</label>
+                            <input type="number" class="form-control" name="minRevenue" id="minRevenue" placeholder="" value="" min="0">
+                        </div>
+                        <div class="col-md-0">
+                            <label for=""> </label>
+                            <p></p>
+                            <p>--</p>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="rangeMax">(high)</label>
+                            <input type="number" class="form-control" name="maxRevenue" id="maxRevenue" placeholder="" value="" min="0">
                         </div>
                     </div>
 
@@ -93,15 +109,9 @@
                         </div>
                         <div class="col-md-2 offset-md-2">
                             <label for="">  </label>
-                            <button class="btn btn-primary btn-sm btn-block" type="submit">Create</button>   
-                        </div>
-                        <div class="col-md-2">
-                            <label for="">  </label>
-                            <button class="btn btn-primary btn-sm btn-block" type="submit">View/ Edit</button>   
-                        </div>
-                        <div class="col-md-2">
-                            <label for="">  </label>
-                            <button class="btn btn-primary btn-sm btn-block" type="submit">Delete</button>   
+                            <a href="/event/create">
+                                <button class="btn btn-primary btn-sm btn-block" type="button">Create</button>
+                            </a>  
                         </div>
                     </div>
                 </form>
@@ -109,25 +119,33 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                            <th scope="col"></th>
                             <th scope="col">Name</th>
                             <th scope="col">Staff Count</th>
                             <th scope="col">Duration (Days)</th>
                             <th scope="col">Total Visits</th>
                             <th scope="col">Total Revenue ($)</th>
+                            <th>Edit</th>
+                            <th>Delte</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for name in names %}
+                            {% for event in events %}
                                 <tr>
+                                    <td>{{event.name}}</td>
+                                    <td>{{event.StaffCount}}</td>
+                                    <td>{{event.Duration}}</td>
+                                    <td>{{event.TotalVisits}}</td>
+                                    <td>{{event.Revenue}}</td>
                                     <td>
-                                        <input class="form-check-input" type="radio" name="name" id="name" value="{{name.username}}" required>
+                                        <a href="/event/edit/{{event.name}}/{{event.StartDate}}">
+                                            <button class="btn btn-primary btn-sm btn-block" type="button">Edit</button>
+                                        </a>
                                     </td>
-                                    <td>{{name.name}}</td>
-                                    <td>{{name.Staff Count}}</td>
-                                    <td>{{name.Duration}}</td>
-                                    <td>{{name.Total Visits}}</td>
-                                    <td>{{name.Total Revenue}}</td>
+                                    <td>
+                                        <a href="/event/delete/{{event.name}}/{{event.StartDate}}">
+                                            <button class="btn btn-primary btn-sm btn-block" type="button">Delete</button>
+                                        </a>
+                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
