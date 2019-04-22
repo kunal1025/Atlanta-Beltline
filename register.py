@@ -57,7 +57,7 @@ def register_user():
                         insertUser = 'INSERT INTO beltline.user values (%s, %s, %s, %s, %s)'
                         pending = 'Pending'
                         insertEmail = 'INSERT INTO beltline.email values (%s, %s)'
-                        cursor.execute(insertUser, (username, password, pending, first_name, last_name))
+                        cursor.execute(insertUser, (username, hashed_password, pending, first_name, last_name))
                         conn.commit()
                         for email in emails:
                             cursor.execute(insertEmail, (username, email))
@@ -110,7 +110,7 @@ def register_visitor():
                         status = 'Pending'
                         insertVisitor = 'INSERT INTO beltline.visitor values (%s)'
                         insertEmail = 'INSERT INTO beltline.email values (%s, %s)'
-                        cursor.execute(insertUser, (username, password, status, first_name, last_name))
+                        cursor.execute(insertUser, (username, hashed_password, status, first_name, last_name))
                         conn.commit()
                         cursor.execute(insertVisitor, (username))
                         conn.commit()
@@ -185,7 +185,7 @@ def register_employee():
                             insertManager = 'INSERT INTO beltline.manager values (%s)'
                         else:
                             insertStaff = 'INSERT INTO beltline.staff values (%s)'
-                        cursor.execute(insertUser, (username, password, status, first_name, last_name))
+                        cursor.execute(insertUser, (username, hashed_password, status, first_name, last_name))
                         conn.commit()
                         cursor.execute(insertEmployee, (username, employeeID, phone, address, city, state, zipcode))
                         conn.commit()
@@ -265,7 +265,7 @@ def register_employee_visitor():
                             insertManager = 'INSERT INTO beltline.manager values (%s)'
                         else:
                             insertStaff = 'INSERT INTO beltline.staff values (%s)'
-                        cursor.execute(insertUser, (username, password, status, first_name, last_name))
+                        cursor.execute(insertUser, (username, hashed_password, status, first_name, last_name))
                         conn.commit()
                         cursor.execute(insertEmployee, (username, employeeID, phone, address, city, state, zipcode))
                         conn.commit()
