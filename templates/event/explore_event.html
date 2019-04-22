@@ -16,7 +16,7 @@
                 <h2>Explore Event</h2>
             </div>
             <div class="col-md-8 offset-md-2">
-                <form method="get">
+                <form method="POST">
                     <div class="row">
                         <div class="col-md-5">
                             <label for="tourName">Name</label>
@@ -37,9 +37,9 @@
                     <div class="row">
                         <div class="col-md-4">
                             <label for="siteName">Site Name</label>
-                            <select class="form-control" name="name" id="siteName">
+                            <select class="form-control" name="siteName" id="siteName">
                                 <option value="">All</option>
-                                {% for site in sites %}
+                                {% for siteName in sites %}
                                     <option value="{{siteName.name}}">{{siteName.name}}</option>
                                 {% endfor %}
                             </select>
@@ -49,12 +49,12 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="date">Start Date</label>
-                            <input type="date" class="form-control" name="date" id="date" placeholder="" value="" required>
+                            <input type="date" class="form-control" name="startdate" id="startdate" placeholder="" value="">
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label for="date">End Date</label>
-                            <input type="date" class="form-control" name="date" id="date" placeholder="" value="" required>
+                            <input type="date" class="form-control" name="enddate" id="enddate" placeholder="" value="">
                         </div>
                     </div>
 
@@ -98,16 +98,16 @@
                         <div class="col-md-4 offset-md-1">
                             <label for="site">Include Visited</label>
                             <select class="form-control" name="site" id="site">
-                                <option value="">Yes</option>
-                                <option value="">No</option>
+                                <option value="100000">Yes</option>
+                                <option value="0">No</option>
                             </select>
                         </div>
 
                         <div class="col-md-4 offset-md-2">
                             <label for="site">Include Sold Out Events</label>
-                            <select class="form-control" name="site" id="site">
-                                <option value="">Yes</option>
-                                <option value="">No</option>
+                            <select class="form-control" name="site1" id="site1">
+                                <option value="0">Yes</option>
+                                <option value="1">No</option>
                             </select>
                         </div>
                     </div>
@@ -115,16 +115,16 @@
                     <div class="row">
                         <div class="col-md-3 offset-md-2">
                             <label for="">  </label>
-                            <button class="btn btn-primary btn-sm btn-block" type="submit">Filter</button>   
+                            <button class="btn btn-primary btn-sm btn-block" type="submit">Filter</button>
                         </div>
-                        
+
                         <div class="col-md-3 offset-md-2">
                             <label for="">  </label>
-                            <button class="btn btn-primary btn-sm btn-block" type="submit">Event Detail</button>   
+                            <button class="btn btn-primary btn-sm btn-block" type="submit">Event Detail</button>
                         </div>
                     </div>
                 </form>
-                <form method="post">
+                <form method="GET">
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -143,12 +143,12 @@
                                     <td>
                                         <input class="form-check-input" type="radio" name="event" id="eventName" value="{{event.eventName}}" required>
                                     </td>
-                                    <td>{{event.Event Name}}</td>
-                                    <td>{{event.Site Name}}</td>
-                                    <td>{{event.Ticket Price}}</td>
-                                    <td>{{event.Tickets Reamining}}</td>
-                                    <td>{{event.Total Visits}}</td>
-                                    <td>{{event.My Visits}}</td>
+                                    <td>{{event.Name}}</td>
+                                    <td>{{event.SiteName}}</td>
+                                    <td>{{event.TicketPrice}}</td>
+                                    <td>{{event.TicketRemaining}}</td>
+                                    <td>{{event.TotalVisits}}</td>
+                                    <td>{{event.MyVisits}}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -157,7 +157,7 @@
                         <div class="col-md-3 offset-md-4">
                             <label for="">  </label>
                             <p></p>
-                            <button class="btn btn-primary btn-sm btn-block" type="submit">Back</button>   
+                            <button class="btn btn-primary btn-sm btn-block" type="submit">Back</button>
                         </div>
                     </div>
                 </form>
