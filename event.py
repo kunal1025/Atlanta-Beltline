@@ -183,17 +183,19 @@ def edit(name, startDate):
             staff = cursor.fetchall()
             for s in staff:
                 s['checked'] = 1
-            getAvailableStaff = 'SELECT staff.username, CONCAT(user.FirstName, ' ', user.LastName) as name FROM staff NATURAL JOIN '\
+            getAvailableStaff = 'SELECT staff.username, CONCAT(user.FirstName, " ", user.LastName) as name FROM staff NATURAL JOIN '\
             'user WHERE staff.username NOT IN (SELECT username FROM beltline.staff_busy '\
-            'WHERE (StartDate between CAST(e_sdate AS DATE) AND CAST(e_edate AS DATE)) '\
-            'OR (EndDate between CAST(e_sdate AS DATE) AND CAST(e_edate AS DATE))) '
-            cursor.execute(getAvailableStaff)
+            'WHERE (StartDate between %s AND %s) OR (EndDate between %s AND %s))'
+            startDate = event['startDate']
+            endDate = event['endDate']
+            cursor.execute(getAvailableStaff, (startDate, endDate, startDate, endDate))
             availableStaff = cursor.fetchall()
+            print(staff)
             staff.append(availableStaff)
             getResults = ''
             return render_template('/event/view_edit_event.html', data=event, staff=staff)
 
-@bp.route('/delete/<name>/<startDate>', methods=('GET'))
+@bp.route('/delete/<name>/<startDate>', methods=('GET',))
 def delete(name, startDate):
     conn = db.get_connection()
     with conn.cursor() as cursor:
