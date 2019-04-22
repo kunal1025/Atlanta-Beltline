@@ -34,17 +34,19 @@ def user():
             return render_template('manage_user.html', users=manage_user)
     
 @bp.route('/user/approved/<username>', methods=['GET'])
-def approve():
+def approve(username):
     conn = db.get_connection()
     if request.method == 'GET':
-        query = "UPDATE user SET User_Status = %s"
-        cursor.execute(query, ("Approved"))
-        return redirect('/manage/user')
+        with conn.cursor() as cursor:
+            query = "UPDATE user SET User_Status = %s where username = %s"
+            cursor.execute(query, ("Approved", username))
+            return redirect('/manage/user')
 
 @bp.route('/user/decline/<username>', methods=['GET'])
-def decline():
+def decline(username):
     conn = db.get_connection()
     if request.method == 'GET':
-        query = "UPDATE user SET User_Status = %s"
-        cursor.execute(query, ("Declined"))
-        return redirect('/manage/user')
+        with conn.cursor() as cursor:
+            query = "UPDATE user SET User_Status = %s where username = %s"
+            cursor.execute(query, ("Declined", username))
+            return redirect('/manage/user')
