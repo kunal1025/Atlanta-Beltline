@@ -245,3 +245,22 @@ def manage():
                 return render_template('transit/manage_transit.html', sites=sites, routes=info)
         except Exception as e:
             print(e)
+
+#36
+@bp.route('/transitdetail/<SiteName>/<TransitType>', methods=['GET'])
+def transit_detail(SiteName, TransitType):
+    conn = db.get_connection()
+    if request.method == 'GET':
+        return render_template('transit/transit_detail.html', SiteName=SiteName)
+
+    else:
+            query = "SELECT SiteName as site, TransitType, TransitRoute, Price, count(*) FROM beltline.transit AS cs JOIN "\
+            "beltline.connect using(TransitType, TransitRoute) "\
+            "WHERE SiteName = %s AND TransitType = %s "\
+            "GROUP BY TransitType, TransitRoute"
+
+            cursor.execute(query (SiteName, TransitType))
+            transits = cursor.fetchall()
+
+            return render_template('transit/transit_detail.html', transits=data)
+ 
