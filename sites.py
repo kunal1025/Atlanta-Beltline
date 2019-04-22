@@ -242,7 +242,7 @@ def history():
             cursor.execute(getSites)
             sites = cursor.fetchall()
             print(sites)
-            return render_template('/transit/transit_history.html', sites=sites)
+            return render_template('/visit_history.html', sites=sites)
 
     else:
         with conn.cursor() as cursor:
