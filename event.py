@@ -55,9 +55,10 @@ def create():
 
 
 
-@bp.route('/visitor/detail/<name>/<start_date>/<site_name>', methods=('GET', 'POST'))
+@bp.route('/visitordetail/<name>/<start_date>/<site_name>', methods=('GET', 'POST'))
 def getDetail(name, start_date, site_name):
     conn = db.get_connection()
+    print(session)
     username = session['username']
     if request.method == 'GET':
         with conn.cursor() as cursor:
@@ -66,9 +67,10 @@ def getDetail(name, start_date, site_name):
             'test1.EndDate as endDate, test1.description from test1 natural join test2 '\
             'Where username = %s AND test1.Name = %s AND '\
             'test1.SiteName = %s and test1.StartDate = %s '\
-            'group by Name, SiteName, Startdate;'
+            'group by Name, SiteName, Startdate'
             cursor.execute(getEvent, (username, name, site_name, start_date))
             event = cursor.fetchone()
+            print(event)
             return render_template('/details/visitor_event_detail.html', event=event)
     else:
         visit_date = request.form.get('visitDate')
@@ -222,3 +224,29 @@ def edit(name, startDate):
             cursor.execute(getEvent, (name, startDate))
             event = cursor.fetchone()
             return render_template('/event/view_edit_event.html', data=event)
+
+@bp.route('/staffdetail/<name>/<start_date>/<site_name>', methods=('GET', 'POST'))
+def staffGetDetail(name, start_date, site_name):
+    conn = db.get_connection()
+    print(session)
+    username = session['username']
+    if request.method == 'GET':
+        with conn.cursor() as cursor:
+            getEvent = 'SELECT Name, SiteName, StartDate, EndDate, capacity, datediff(EndDate, StartDate) as durationDays, price, '\
+                        'description FROM event WHERE Name = %s AND SiteName = %s AND StartDate = %s '
+
+
+            cursor.execute(getEvent, (name, site_name, start_date))
+            event = cursor.fetchone()
+            print(event)
+            getStaff = 'Select concat(FirstName, " ", LastName) as name FROM assign_to JOIN user using(Username) WHERE assign_to.Name = %s AND SiteName = %s AND StartDate = %s '
+            cursor.execute(getStaff, (name, site_name, start_date))
+            staff = cursor.fetchall()
+            print(staff)
+            staff_list = []
+            for x in staff:
+                staff_list.append(x['name'])
+
+            return render_template('/details/staff_event_detail.html', event=event, staff = staff_list)
+    else:
+        return 'hi'
