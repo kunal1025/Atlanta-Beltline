@@ -172,7 +172,22 @@ def edit(name, startDate):
     conn = db.get_connection()
     if request.method == 'GET':
         with conn.cursor() as cursor:
-            getEvent = 'select name, startDate, endDate, price, minstaffreq, capacity from event where name = %s AND startdate = %s'
+            getEvent = 'select sitename, name, startDate, endDate, price, minstaffreq, capacity, description from event where name = %s AND startdate = %s'
             cursor.execute(getEvent, (name, startDate))
             event = cursor.fetchone()
-            return render_template('/event/view_edit_event.html', data=event)
+            getStaff = 'SELECT FirstName, LastName, concat(FirstName, " ", LastName) AS name '\
+            'FROM assign_to JOIN event USING '\
+            '(Name, SiteName, StartDate) JOIN user Using(Username) '\
+            'WHERE event.StartDate = %s AND event.EndDate = %s AND SiteName = %s'
+            cursor.execute(getStaff, (startDate, event['endDate'], event['sitename']))
+            staff = cursor.fetchall()
+            for s in staff:
+                s['checked'] = 1
+            getAvailableStaff = 'SELECT staff.username, CONCAT(user.FirstName, ' ', user.LastName) as name FROM staff NATURAL JOIN '\
+            'user WHERE staff.username NOT IN (SELECT username FROM beltline.staff_busy '\
+            'WHERE (StartDate between CAST(e_sdate AS DATE) AND CAST(e_edate AS DATE)) '\
+            'OR (EndDate between CAST(e_sdate AS DATE) AND CAST(e_edate AS DATE))) '
+            cursor.execute(getAvailableStaff)
+            availableStaff = cursor.fetchall()
+            staff.append(availableStaff)
+            return render_template('/event/view_edit_event.html', data=event, staff=staff)
