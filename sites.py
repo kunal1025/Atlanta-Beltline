@@ -252,61 +252,8 @@ def history():
             print(visit_history)
             return render_template('visit_history.html', history=visit_history, sites=sites)
 
-# 32
-@bp.route('/staffeventdetail/<SiteName>/<Name>/<StartDate>', methods=('GET',))
-def event_detail(SiteName, Name, StartDate):
-    conn = db.get_connection()
-    with conn.cursor() as cursor:
-        query = "Select FirstName, LastName, concat(FirstName, LastName) AS staffName,Name AS eventName, " \
-        "SiteName AS siteName, StartDate as startDate, EndDate AS endDate, capacity, datediff(EndDate, StartDate) " \
-        "as durationDays, price, description as 'desc' FROM assign_to JOIN user using (Username) JOIN event using" \
-        "(SiteName, Name, StartDate) WHERE assign_to.SiteName = %s AND assign_to.StartDate = %s AND assign_to.Name = %s"
-        
-        cursor.execute(query, (SiteName, StartDate, Name))
-        data = cursor.fetchall()
-        return render_template('details/staff_event_detail.html',event=data)
- 
-#30
-@bp.route('/dailydetail/<VisitEventDate>', methods=['GET'])
-def daily_detail():
-    conn = db.get_connection()
-    if request.method == 'GET':
-        with conn.cursor() as cursor:
 
-            sitename = session["site"]
-            
-            query = "SELECT VisitEventName AS eventName, group_concat(Distinct concat(User.FirstName, ' ', User.LastName)) as staffNames, " \
-            "count(visit_event.Username) AS visits, Price, Price*count(visit_event.Username) as " \
-            "revenue from event join visit_event on event.Name = visit_event.VisitEventName AND " \
-            "event.SiteName = visit_event.SiteName AND event.StartDate = visit_event.StartDate JOIN " \
-            "assign_to ON assign_to.Name = event.Name AND assign_to.SiteName = event.SiteName AND " \
-            "assign_to.StartDate = event.StartDate JOIN user on user.Username = assign_to.Username " \
-            "WHERE visit_event.VisitEventDate = %s AND visit_event.SiteName = %s " \
-            "group by event.SiteName, visit_event.VisitEventDate, event.StartDate"
 
-            cursor.execute(query, (VisitEventDate, sitename))
-            data = cursor.fetchall()
-            print(data)
-            return render_template('details/daily_detail.html',dataDB=data)
-
-#36
-@bp.route('/transitdetail/<SiteName>/<TransitType>', methods=['GET'])
-def transit_detail(SiteName, TransitType):
-    conn = db.get_connection()
-    if request.method == 'GET':
-        return render_template('transit/transit_detail.html', SiteName=SiteName)
-
-    else:
-            query = "SELECT SiteName as site, TransitType, TransitRoute, Price, count(*) FROM beltline.transit AS cs JOIN "\
-            "beltline.connect using(TransitType, TransitRoute) "\
-            "WHERE SiteName = %s AND TransitType = %s "\
-            "GROUP BY TransitType, TransitRoute"
-
-            cursor.execute(query (SiteName, TransitType))
-            transits = cursor.fetchall()
-
-            return render_template('transit/transit_detail.html', transits=data)
- 
 
 
 @bp.route('/explore_site', methods=('GET', 'POST'))
